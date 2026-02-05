@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b6cee",
+                        "charcoal": "#1A1A1A",
+                        "medium-grey": "#71717A",
+                        "light-grey": "#E4E4E7",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<title>Sentence Practice Session</title>
+<style type="text/tailwindcss">
+        :root {
+            --primary: #2b6cee;
+            --charcoal: #1A1A1A;
+            --medium-grey: #71717A;
+            --light-grey: #E4E4E7;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+            background-color: #FFFFFF;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-white font-display text-charcoal selection:bg-primary/10">
+<div class="relative mx-auto min-h-screen max-w-[430px] flex flex-col overflow-x-hidden bg-white">
+<div class="sticky top-0 z-50 flex items-center bg-white/90 backdrop-blur-md p-4 pb-2 justify-between">
+<div class="text-charcoal flex size-12 shrink-0 items-center justify-start cursor-pointer">
+<span class="material-symbols-outlined text-[28px]">close</span>
+</div>
+<div class="flex flex-col items-center flex-1 pr-12">
+<span class="text-medium-grey text-[10px] font-bold uppercase tracking-widest mb-0.5">Practice Session</span>
+<span class="text-primary text-xs font-bold">1 of 5 phrases</span>
+</div>
+</div>
+<div class="px-12 mt-4">
+<div class="w-full h-1.5 bg-light-grey rounded-full overflow-hidden">
+<div class="w-1/5 h-full bg-primary rounded-full"></div>
+</div>
+</div>
+<div class="flex flex-col flex-1 px-8 justify-center items-center text-center">
+<div class="mb-6">
+<h1 class="text-charcoal text-3xl font-bold leading-tight tracking-tight px-2">
+                    "I was wondering if you could help me with this."
+                </h1>
+</div>
+<div class="mb-12">
+<p class="text-medium-grey text-lg font-medium">
+                    "이것 좀 도와주실 수 있는지 궁금해요."
+                </p>
+</div>
+<button class="flex items-center gap-2 bg-white border border-light-grey px-8 py-3.5 rounded-full shadow-sm active:bg-slate-50 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-charcoal">volume_up</span>
+<span class="text-charcoal font-semibold">Listen</span>
+</button>
+</div>
+<div class="px-8 pb-12 flex flex-col items-center">
+<p class="text-medium-grey text-sm font-medium mb-8">
+                Press and hold to start speaking
+            </p>
+<div class="relative group">
+<div class="absolute inset-0 bg-primary/5 rounded-full blur-2xl scale-150 transition-transform"></div>
+<button class="relative size-24 bg-primary text-white rounded-full flex items-center justify-center shadow-xl shadow-primary/20 active:scale-90 transition-all cursor-pointer">
+<span class="material-symbols-outlined text-4xl leading-none">mic</span>
+</button>
+</div>
+<p class="mt-8 text-primary font-bold text-lg tracking-tight">Hold to Speak</p>
+</div>
+<div class="h-8"></div>
+</div>
+
+</body></html>

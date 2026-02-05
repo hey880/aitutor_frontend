@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b6cee",
+                        "background-light": "#ffffff",
+                        "text-heading": "#000000",
+                        "text-body": "#4b5563",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: 'Lexend', sans-serif;
+            min-height: max(884px, 100dvh);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light text-text-body min-h-screen flex flex-col">
+<header class="sticky top-0 z-10 bg-white/95 backdrop-blur-md px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-text-heading cursor-pointer p-1">arrow_back_ios</span>
+</div>
+<h2 class="text-text-heading text-base font-semibold leading-tight tracking-tight">Step 2 of 8</h2>
+<div class="w-8"></div>
+</header>
+<div class="px-4 py-2">
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<p class="text-text-body/60 text-[10px] font-bold uppercase tracking-widest">Onboarding progress</p>
+<p class="text-primary text-xs font-bold">25%</p>
+</div>
+<div class="h-1.5 w-full rounded-full bg-gray-100 overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 25%;"></div>
+</div>
+</div>
+</div>
+<main class="flex-1 overflow-y-auto custom-scrollbar pb-32">
+<div class="px-4 pt-6 pb-2">
+<h1 class="text-text-heading text-3xl font-bold leading-tight tracking-tight">Why are you learning English?</h1>
+</div>
+<div class="px-4 pb-6">
+<p class="text-text-body text-base font-normal leading-relaxed">Choose all that apply to personalize your AI tutor experience.</p>
+</div>
+<div class="grid grid-cols-2 gap-4 px-4">
+<div class="relative group cursor-pointer border border-gray-200 rounded-xl bg-white p-4 flex flex-col items-start gap-4 transition-all hover:border-primary/50">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">work</span>
+</div>
+<p class="text-text-heading text-lg font-semibold">Career</p>
+<div class="absolute top-3 right-3 w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center bg-white">
+</div>
+</div>
+<div class="relative group cursor-pointer border-2 border-primary rounded-xl bg-white p-4 flex flex-col items-start gap-4 transition-all">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">flight_takeoff</span>
+</div>
+<p class="text-text-heading text-lg font-semibold">Travel</p>
+<div class="absolute top-3 right-3 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm font-bold">check</span>
+</div>
+</div>
+<div class="relative group cursor-pointer border border-gray-200 rounded-xl bg-white p-4 flex flex-col items-start gap-4 transition-all hover:border-primary/50">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">school</span>
+</div>
+<p class="text-text-heading text-lg font-semibold">Exams</p>
+<div class="absolute top-3 right-3 w-6 h-6 rounded-full border border-gray-300 bg-white"></div>
+</div>
+<div class="relative group cursor-pointer border border-gray-200 rounded-xl bg-white p-4 flex flex-col items-start gap-4 transition-all hover:border-primary/50">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">forum</span>
+</div>
+<p class="text-text-heading text-lg font-semibold leading-tight">Conversation</p>
+<div class="absolute top-3 right-3 w-6 h-6 rounded-full border border-gray-300 bg-white"></div>
+</div>
+<div class="relative group cursor-pointer border border-gray-200 rounded-xl bg-white p-4 flex flex-col items-start gap-4 transition-all hover:border-primary/50">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">sports_esports</span>
+</div>
+<p class="text-text-heading text-lg font-semibold">Hobbies</p>
+<div class="absolute top-3 right-3 w-6 h-6 rounded-full border border-gray-300 bg-white"></div>
+</div>
+<div class="relative group cursor-pointer border border-gray-200 rounded-xl bg-white p-4 flex flex-col items-start gap-4 transition-all hover:border-primary/50">
+<div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">home_pin</span>
+</div>
+<p class="text-text-heading text-lg font-semibold">Relocation</p>
+<div class="absolute top-3 right-3 w-6 h-6 rounded-full border border-gray-300 bg-white"></div>
+</div>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-sm pb-8">
+<button class="w-full bg-primary hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-transform active:scale-95">
+<span>Next</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</footer>
+
+</body></html>

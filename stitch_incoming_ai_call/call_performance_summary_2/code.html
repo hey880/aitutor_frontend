@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b6cee",
+                        "brand-blue": "#2b6cee",
+                        "brand-green": "#10b981",
+                        "brand-orange": "#f59e0b",
+                        "neutral-dark": "#1f2937",
+                        "neutral-grey": "#6b7280",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<title>Session Detail - White Mode</title>
+<style type="text/tailwindcss">
+        body {
+            min-height: 100dvh;
+        }
+        .nav-active {
+            color: #2b6cee;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-white font-display text-neutral-dark selection:bg-primary/30">
+<div class="relative mx-auto min-h-screen max-w-[430px] flex flex-col overflow-x-hidden shadow-sm bg-white pb-24">
+<div class="sticky top-0 z-50 flex items-center bg-white/90 backdrop-blur-md p-4 pb-2 justify-between">
+<div class="text-brand-blue flex size-12 shrink-0 items-center justify-start cursor-pointer">
+<span class="material-symbols-outlined text-[28px]">arrow_back_ios_new</span>
+</div>
+<h2 class="text-black text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Session Detail</h2>
+</div>
+<div class="flex flex-col flex-1 px-5 pb-10">
+<div class="pt-6 pb-8 text-center">
+<p class="text-brand-blue text-[11px] font-bold uppercase tracking-widest mb-1">Topic</p>
+<h1 class="text-black text-2xl font-bold mb-2">Ordering Coffee at a Cafe</h1>
+<div class="flex items-center justify-center gap-2 text-neutral-grey text-sm font-medium">
+<span class="material-symbols-outlined text-base">calendar_month</span>
+<span>Oct 24, 2023 • 10:30 AM</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-4 mb-8">
+<div class="flex flex-col items-center gap-3 rounded-2xl p-4 bg-white border border-slate-100 shadow-sm">
+<div class="relative size-14 flex items-center justify-center">
+<svg class="absolute inset-0 size-full -rotate-90" viewBox="0 0 36 36">
+<circle class="stroke-slate-100" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-brand-blue" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="15" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<span class="text-black text-sm font-bold">85%</span>
+</div>
+<p class="text-neutral-grey text-[9px] font-bold uppercase tracking-wider">Pronunciation</p>
+</div>
+<div class="flex flex-col items-center gap-3 rounded-2xl p-4 bg-white border border-slate-100 shadow-sm">
+<div class="relative size-14 flex items-center justify-center">
+<svg class="absolute inset-0 size-full -rotate-90" viewBox="0 0 36 36">
+<circle class="stroke-slate-100" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-brand-green" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="8" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<span class="text-black text-sm font-bold">92%</span>
+</div>
+<p class="text-neutral-grey text-[9px] font-bold uppercase tracking-wider">Intonation</p>
+</div>
+<div class="flex flex-col items-center gap-3 rounded-2xl p-4 bg-white border border-slate-100 shadow-sm">
+<div class="relative size-14 flex items-center justify-center">
+<svg class="absolute inset-0 size-full -rotate-90" viewBox="0 0 36 36">
+<circle class="stroke-slate-100" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-brand-orange" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="22" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<span class="text-black text-sm font-bold">78%</span>
+</div>
+<p class="text-neutral-grey text-[9px] font-bold uppercase tracking-wider">Fluency</p>
+</div>
+</div>
+<div class="bg-slate-50 border border-slate-100 rounded-2xl p-5 mb-8">
+<div class="flex items-center gap-2 mb-2.5">
+<span class="material-symbols-outlined text-brand-blue text-xl">auto_awesome</span>
+<h4 class="text-black font-bold text-sm">Performance Feedback</h4>
+</div>
+<p class="text-neutral-grey text-sm leading-relaxed">
+                    You're doing great with complex sentence structures! Your flow was natural, but try to focus on the 'th' sound in words like "though" and "through."
+                </p>
+</div>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-black text-lg font-bold tracking-tight">Key Expressions</h3>
+<span class="bg-brand-blue/10 text-brand-blue px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">3 items</span>
+</div>
+<div class="space-y-3 mb-12">
+<div class="flex items-center justify-between p-4 rounded-xl bg-white border border-slate-200">
+<div class="flex-1">
+<p class="text-black font-semibold text-base mb-0.5">"I was wondering if..."</p>
+<p class="text-neutral-grey text-xs">Asking for permission politely</p>
+</div>
+<button class="flex items-center gap-1.5 px-4 py-2 bg-brand-blue/10 hover:bg-brand-blue/15 text-brand-blue rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">mic</span>
+<span class="text-xs font-bold uppercase tracking-wide">Practice</span>
+</button>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-white border border-slate-200">
+<div class="flex-1">
+<p class="text-black font-semibold text-base mb-0.5">"To cut a long story short"</p>
+<p class="text-neutral-grey text-xs">Summarizing your points</p>
+</div>
+<button class="flex items-center gap-1.5 px-4 py-2 bg-brand-blue/10 hover:bg-brand-blue/15 text-brand-blue rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">mic</span>
+<span class="text-xs font-bold uppercase tracking-wide">Practice</span>
+</button>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-white border border-slate-200">
+<div class="flex-1">
+<p class="text-black font-semibold text-base mb-0.5">"Under the weather"</p>
+<p class="text-neutral-grey text-xs">Feeling unwell</p>
+</div>
+<button class="flex items-center gap-1.5 px-4 py-2 bg-brand-blue/10 hover:bg-brand-blue/15 text-brand-blue rounded-lg transition-colors">
+<span class="material-symbols-outlined text-lg">mic</span>
+<span class="text-xs font-bold uppercase tracking-wide">Practice</span>
+</button>
+</div>
+</div>
+<div class="mt-auto flex flex-col gap-3">
+<button class="w-full bg-brand-blue hover:bg-brand-blue/90 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-md">
+<span class="material-symbols-outlined">exercise</span>
+                    Start Practice Session
+                </button>
+<button class="w-full bg-slate-50 border border-slate-200 hover:bg-slate-100 text-neutral-dark font-bold py-4 rounded-2xl transition-colors">
+                    View Full Transcript
+                </button>
+</div>
+</div>
+<div class="fixed bottom-0 left-0 right-0 mx-auto max-w-[430px] bg-white/95 backdrop-blur-xl border-t border-slate-100 px-10 pb-6 pt-3 flex justify-between items-center z-50">
+<div class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="text-[10px] font-medium">Schedule</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-slate-400">
+<span class="material-symbols-outlined">call</span>
+<span class="text-[10px] font-medium">Call</span>
+</div>
+<div class="flex flex-col items-center gap-1 nav-active">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">menu_book</span>
+<span class="text-[10px] font-bold">Study</span>
+</div>
+</div>
+</div>
+
+</body></html>

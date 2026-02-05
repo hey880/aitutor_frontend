@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Study Archive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b6cee",
+                        "pure-white": "#FFFFFF",
+                        "light-grey": "#F3F4F6",
+                        "border-light": "#E5E7EB",
+                        "text-dark": "#111827",
+                        "text-grey": "#6B7280",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Lexend', sans-serif;
+            min-height: max(884px, 100dvh);
+            background-color: #FFFFFF;
+            color: #111827;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .active-chip {
+            background-color: #2b6cee;
+            color: #FFFFFF;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-pure-white text-text-dark min-h-screen">
+<div class="h-12 w-full flex items-center justify-between px-6 text-sm font-medium">
+<span>9:41</span>
+<div class="flex gap-1.5 items-center">
+<span class="material-symbols-outlined text-base">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-base">wifi</span>
+<span class="material-symbols-outlined text-base">battery_full</span>
+</div>
+</div>
+<header class="sticky top-0 z-10 bg-pure-white/95 backdrop-blur-md">
+<div class="flex items-center p-4 justify-between">
+<div class="flex size-10 shrink-0 items-center justify-start text-text-dark">
+<span class="material-symbols-outlined text-2xl">settings</span>
+</div>
+<h1 class="text-xl font-bold leading-tight tracking-tight flex-1 text-center text-text-dark">Study Archive</h1>
+<div class="flex size-10 items-center justify-end">
+<button class="flex items-center justify-center rounded-full p-2 transition-colors text-primary">
+<span class="material-symbols-outlined text-2xl">add_circle</span>
+</button>
+</div>
+</div>
+<div class="px-4 py-2">
+<label class="flex flex-col min-w-40 h-11 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-xl h-full overflow-hidden bg-light-grey">
+<div class="text-text-grey flex border-none items-center justify-center pl-4">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 border-none bg-transparent focus:ring-0 focus:outline-none h-full placeholder:text-text-grey px-3 text-base font-normal text-text-dark" placeholder="Search saved items..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex gap-2 p-4 overflow-x-auto no-scrollbar">
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full active-chip px-5 shadow-sm">
+<p class="text-sm font-semibold">All</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-light-grey px-5 border border-transparent hover:border-primary/30 transition-all text-text-grey">
+<span class="material-symbols-outlined text-lg opacity-70">translate</span>
+<p class="text-sm font-medium">Vocabulary</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-light-grey px-5 border border-transparent hover:border-primary/30 transition-all text-text-grey">
+<span class="material-symbols-outlined text-lg opacity-70">history_edu</span>
+<p class="text-sm font-medium">Grammar</p>
+</div>
+<div class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-light-grey px-5 border border-transparent hover:border-primary/30 transition-all text-text-grey">
+<span class="material-symbols-outlined text-lg opacity-70">mic</span>
+<p class="text-sm font-medium">Pronunciation</p>
+</div>
+</div>
+</header>
+<main class="px-4 pb-32 space-y-4">
+<div class="group relative bg-pure-white rounded-2xl p-4 border border-border-light shadow-sm transition-all active:scale-[0.98]">
+<div class="flex justify-between items-start mb-3">
+<div class="flex flex-col">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-orange-50 text-orange-600 mb-1">Grammar</span>
+<span class="text-[11px] text-text-grey font-medium">Oct 24 • Morning Call</span>
+</div>
+<button class="text-primary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</button>
+</div>
+<div class="space-y-4">
+<div class="relative pl-4 border-l-2 border-border-light">
+<p class="text-xs text-text-grey font-medium mb-0.5">You said:</p>
+<p class="text-text-grey text-sm italic">"I go to store yesterday."</p>
+</div>
+<div class="relative pl-4 border-l-2 border-primary/50">
+<p class="text-xs text-primary font-semibold mb-0.5">Correction:</p>
+<p class="text-text-dark text-lg font-bold leading-tight">"I went to the store yesterday."</p>
+</div>
+<div class="bg-blue-50/50 rounded-xl p-3 flex gap-3 items-start border border-blue-100/50">
+<span class="material-symbols-outlined text-primary text-xl">info</span>
+<p class="text-text-grey text-sm leading-relaxed">
+                        Use the past tense <span class="text-primary font-bold">'went'</span> instead of 'go' for completed actions in the past.
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-white bg-blue-500 flex items-center justify-center text-[10px] font-bold text-white">AI</div>
+<div class="w-6 h-6 rounded-full border-2 border-white bg-slate-400 flex items-center justify-center text-[10px] font-bold text-white">ME</div>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2.5 transition-shadow shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-lg">exercise</span>
+<span class="text-sm font-bold">Practice</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group relative bg-pure-white rounded-2xl p-4 border border-border-light shadow-sm transition-all active:scale-[0.98]">
+<div class="flex justify-between items-start mb-3">
+<div class="flex flex-col">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-green-50 text-green-600 mb-1">Vocabulary</span>
+<span class="text-[11px] text-text-grey font-medium">Oct 23 • Evening Call</span>
+</div>
+<button class="text-primary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</button>
+</div>
+<div class="space-y-4">
+<div class="relative pl-4 border-l-2 border-border-light">
+<p class="text-xs text-text-grey font-medium mb-0.5">You said:</p>
+<p class="text-text-grey text-sm italic">"Repeat please?"</p>
+</div>
+<div class="relative pl-4 border-l-2 border-primary/50">
+<p class="text-xs text-primary font-semibold mb-0.5">Better Way:</p>
+<p class="text-text-dark text-lg font-bold leading-tight">"Could you repeat that, please?"</p>
+</div>
+<div class="bg-blue-50/50 rounded-xl p-3 flex gap-3 items-start border border-blue-100/50">
+<span class="material-symbols-outlined text-primary text-xl">lightbulb</span>
+<p class="text-text-grey text-sm leading-relaxed">
+                        This is a more polite and natural way to ask for clarification in a business context.
+                    </p>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="flex gap-2 text-text-grey">
+<span class="material-symbols-outlined text-lg hover:text-primary transition-colors cursor-pointer">share</span>
+<span class="material-symbols-outlined text-lg hover:text-red-500 transition-colors cursor-pointer">delete</span>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2.5 shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-lg">exercise</span>
+<span class="text-sm font-bold">Practice</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 py-2">
+<h2 class="text-text-grey text-xs font-bold uppercase tracking-widest whitespace-nowrap">Last Week</h2>
+<div class="h-[1px] w-full bg-border-light"></div>
+</div>
+<div class="group relative bg-pure-white rounded-2xl p-4 border border-border-light shadow-sm transition-all active:scale-[0.98]">
+<div class="flex justify-between items-start mb-3">
+<div class="flex flex-col">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-600 mb-1">Pronunciation</span>
+<span class="text-[11px] text-text-grey font-medium">Oct 18 • Travel Practice</span>
+</div>
+<button class="text-primary">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+</button>
+</div>
+<div class="space-y-4">
+<div class="relative pl-4 border-l-2 border-border-light">
+<p class="text-xs text-text-grey font-medium mb-0.5">Word Focus:</p>
+<p class="text-text-dark text-lg font-bold">Schedule</p>
+</div>
+<div class="bg-blue-50/50 rounded-xl p-3 flex gap-3 items-center border border-blue-100/50">
+<span class="material-symbols-outlined text-primary text-xl">graphic_eq</span>
+<div class="flex-1">
+<p class="text-text-grey text-sm">
+                            Phonetic: <span class="font-mono text-primary font-semibold">/ˈskedʒ.uːl/</span>
+</p>
+<p class="text-text-grey/60 text-xs italic mt-1">Commonly mispronounced with a soft 'sh'.</p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<div class="h-2 w-32 bg-light-grey rounded-full overflow-hidden">
+<div class="h-full w-3/4 bg-primary"></div>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white rounded-full px-6 py-2.5 shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-lg">exercise</span>
+<span class="text-sm font-bold">Practice</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<nav class="fixed bottom-0 w-full bg-pure-white/95 backdrop-blur-xl border-t border-border-light px-8 pt-3 pb-8 flex justify-between items-center z-20">
+<div class="flex flex-col items-center gap-1 text-text-grey">
+<span class="material-symbols-outlined text-[28px]">calendar_today</span>
+<span class="text-[10px] font-medium">Schedule</span>
+</div>
+<div class="flex flex-col items-center -mt-8">
+<div class="bg-primary size-14 rounded-full flex items-center justify-center shadow-lg shadow-primary/30 border-4 border-pure-white">
+<span class="material-symbols-outlined text-white text-3xl">call</span>
+</div>
+<span class="text-[10px] font-bold text-primary mt-1">Call</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+<span class="text-[10px] font-medium">Study</span>
+</div>
+</nav>
+
+</body></html>

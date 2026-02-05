@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Onboarding - Personal Details (Step 7 of 8)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b6cee",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen">
+<div class="max-w-[480px] mx-auto min-h-screen bg-white dark:bg-background-dark flex flex-col shadow-xl">
+<div class="px-4 pt-4 pb-2">
+<div class="flex items-center justify-between mb-2">
+<button class="p-2 -ml-2 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<p class="text-sm font-medium text-slate-500">Step 7 of 8</p>
+<div class="w-8"></div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex gap-6 justify-between items-center">
+<p class="text-slate-900 dark:text-white text-sm font-medium leading-normal">Setup Progress</p>
+<p class="text-primary text-sm font-bold leading-normal">87.5%</p>
+</div>
+<div class="rounded-full bg-slate-100 dark:bg-slate-800 h-2 w-full overflow-hidden">
+<div class="h-full rounded-full bg-primary" style="width: 87.5%;"></div>
+</div>
+</div>
+</div>
+<div class="px-4 pt-6 pb-2">
+<h1 class="text-slate-900 dark:text-white tracking-tight text-3xl font-bold leading-tight">Personal Details</h1>
+<p class="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal mt-2">
+                Tell us a bit about yourself to help your AI tutor customize your experience.
+            </p>
+</div>
+<div class="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-5">
+<div class="flex flex-col gap-2">
+<label class="text-slate-900 dark:text-white text-base font-medium">Full Name</label>
+<input class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 h-14 px-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400" placeholder="Enter your name" type="text" value="John Doe"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-slate-900 dark:text-white text-base font-medium">How should I address you?</label>
+<input class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 h-14 px-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-400" placeholder="e.g. Alex (AI name preference)" type="text"/>
+<p class="text-xs text-slate-400 px-1">This is the name your AI tutor will use during conversations.</p>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-slate-900 dark:text-white text-base font-medium">Date of Birth</label>
+<div class="relative">
+<input class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 h-14 px-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all appearance-none" type="date" value="1995-01-01"/>
+<span class="material-symbols-outlined absolute right-4 top-4 text-slate-400 pointer-events-none">calendar_month</span>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<label class="text-slate-900 dark:text-white text-base font-medium">How do you identify?</label>
+<div class="grid grid-cols-3 gap-3">
+<button class="flex flex-col items-center justify-center min-h-[72px] p-2 rounded-xl border-2 border-primary bg-primary/5 text-primary">
+<span class="text-sm font-bold">He / Him</span>
+</button>
+<button class="flex flex-col items-center justify-center min-h-[72px] p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:border-primary/50">
+<span class="text-sm font-medium">She / Her</span>
+</button>
+<button class="flex flex-col items-center justify-center min-h-[72px] p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 hover:border-primary/50">
+<span class="text-sm font-medium">Other / They</span>
+</button>
+</div>
+</div>
+<div class="mt-2 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/30 flex gap-3 border border-slate-100 dark:border-slate-800">
+<span class="material-symbols-outlined text-primary">info</span>
+<p class="text-sm text-slate-500 dark:text-slate-400">
+                    Your data helps us customize your learning path and adjust the difficulty based on age-appropriate topics.
+                </p>
+</div>
+</div>
+<div class="p-4 bg-white dark:bg-background-dark border-t border-slate-100 dark:border-slate-800">
+<button class="w-full bg-primary hover:bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                Continue
+                <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+
+</body></html>

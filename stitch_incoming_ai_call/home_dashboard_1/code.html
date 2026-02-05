@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Updated Home Dashboard Stats</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b6cee",
+                        "premium": "#d4af37",
+                        "background-light": "#f8f9fa",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .nav-active {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen">
+<div class="max-w-md mx-auto min-h-screen flex flex-col shadow-2xl bg-white dark:bg-slate-900 overflow-hidden relative">
+<header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md">
+<div class="flex items-center p-4 justify-between">
+<div class="flex items-center gap-2">
+<div class="text-primary flex size-8 items-center justify-center rounded-lg bg-primary/10">
+<span class="material-symbols-outlined text-xl">translate</span>
+</div>
+<h1 class="text-slate-900 dark:text-white text-lg font-bold tracking-tight">LingoDash</h1>
+</div>
+<div class="flex items-center gap-2">
+<div class="px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 flex items-center gap-1">
+<span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-[14px] font-bold">workspace_premium</span>
+<span class="text-[11px] font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider">Premium</span>
+</div>
+<button class="flex size-10 items-center justify-center rounded-full bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined">calendar_today</span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-full bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto pb-24">
+<div class="px-5 py-6">
+<div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
+<div class="flex flex-col items-center text-center space-y-4">
+<div class="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">record_voice_over</span>
+</div>
+<div class="space-y-1">
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Practice with Sarah</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Improve your fluency through natural conversation.</p>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-4 px-6 rounded-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined">play_circle</span>
+                            Start Practice Session
+                        </button>
+</div>
+</div>
+</div>
+<div class="px-5 py-2">
+<h3 class="text-slate-900 dark:text-white text-sm font-bold mb-4 uppercase tracking-widest opacity-60">Tutoring Type</h3>
+<div class="flex flex-col gap-3">
+<button class="flex items-center justify-between p-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl transition-all active:bg-slate-50 dark:active:bg-slate-700 group">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+<span class="material-symbols-outlined">menu_book</span>
+</div>
+<span class="text-slate-800 dark:text-slate-200 font-medium">English to Korean</span>
+</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
+</button>
+<button class="flex items-center justify-between p-5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl transition-all active:bg-slate-50 dark:active:bg-slate-700 group">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+<span class="material-symbols-outlined">chat</span>
+</div>
+<span class="text-slate-800 dark:text-slate-200 font-medium">Korean to English</span>
+</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="px-5 py-8">
+<div class="flex gap-4">
+<div class="flex-1 bg-slate-50 dark:bg-slate-800/30 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Streak</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-orange-500 text-xl nav-active">local_fire_department</span>
+<span class="text-lg font-bold text-slate-900 dark:text-white">5 Days</span>
+</div>
+</div>
+<div class="flex-1 bg-slate-50 dark:bg-slate-800/30 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Words Today</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-500 text-xl nav-active">chat_bubble</span>
+<span class="text-lg font-bold text-slate-900 dark:text-white">450</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800 px-8 py-4 flex justify-between items-center z-50">
+<button class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="text-[10px] font-semibold">Schedule</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<div class="bg-primary/10 p-2 rounded-xl mb-[-4px]">
+<span class="material-symbols-outlined nav-active">call</span>
+</div>
+<span class="text-[10px] font-bold">Call</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">archive</span>
+<span class="text-[10px] font-semibold">Study</span>
+</button>
+</nav>
+<div class="fixed bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-slate-200 dark:bg-slate-700 rounded-full z-50"></div>
+</div>
+
+</body></html>

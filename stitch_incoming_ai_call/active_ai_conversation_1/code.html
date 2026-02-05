@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Active AI Conversation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b6cee",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        .visualizer-pulse {
+            box-shadow: 0 0 20px 5px rgba(43, 108, 238, 0.3);
+        }
+        .ios-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .modal-blur {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-hidden h-screen flex flex-col relative">
+<div class="flex flex-col h-full filter blur-sm">
+<header class="w-full flex flex-col items-center pt-12 pb-6 px-6">
+<div class="flex items-center gap-2 mb-2">
+<span class="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
+<span class="text-xs font-medium uppercase tracking-widest text-slate-400">Live Session</span>
+</div>
+<div class="flex gap-2">
+<div class="flex flex-col items-center">
+<div class="flex h-12 w-14 items-center justify-center rounded-xl bg-white/5 dark:bg-white/10 border border-white/10">
+<p class="text-white text-xl font-semibold">09</p>
+</div>
+<p class="text-[10px] mt-1 text-slate-400 uppercase">Min</p>
+</div>
+<div class="text-xl font-bold flex items-center mb-5 text-primary">:</div>
+<div class="flex flex-col items-center">
+<div class="flex h-12 w-14 items-center justify-center rounded-xl bg-white/5 dark:bg-white/10 border border-white/10">
+<p class="text-white text-xl font-semibold">42</p>
+</div>
+<p class="text-[10px] mt-1 text-slate-400 uppercase">Sec</p>
+</div>
+</div>
+</header>
+<main class="flex-1 flex flex-col items-center justify-center relative px-6">
+<div class="mb-8 text-center">
+<h1 class="text-2xl font-semibold tracking-tight">AI Language Coach</h1>
+<p class="text-primary text-sm font-medium">Listening...</p>
+</div>
+<div class="relative w-64 h-64 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border-2 border-primary/20 scale-110"></div>
+<div class="w-48 h-48 rounded-full bg-gradient-to-tr from-primary to-[#5b96ff] flex items-center justify-center visualizer-pulse overflow-hidden">
+<div class="w-full h-full flex items-center justify-center gap-1">
+<div class="w-1 bg-white/60 h-8 rounded-full"></div>
+<div class="w-1 bg-white/80 h-16 rounded-full"></div>
+<div class="w-1 bg-white h-24 rounded-full"></div>
+<div class="w-1 bg-white/90 h-14 rounded-full"></div>
+<div class="w-1 bg-white/70 h-10 rounded-full"></div>
+</div>
+</div>
+</div>
+</main>
+<footer class="w-full bg-black/20 ios-blur pt-6 pb-12 rounded-t-[2.5rem] border-t border-white/5">
+<div class="flex px-8 mb-4 justify-center">
+<div class="flex h-9 w-64 items-center justify-center rounded-full bg-white/5 p-1 border border-white/10">
+<label class="flex h-full grow items-center justify-center overflow-hidden rounded-full px-2 bg-primary text-white text-xs font-medium">
+<span>English Only</span>
+</label>
+<label class="flex h-full grow items-center justify-center overflow-hidden rounded-full px-2 text-slate-400 text-xs font-medium">
+<span>KR Translation</span>
+</label>
+</div>
+</div>
+<div class="flex justify-between items-center px-6">
+<button class="flex flex-col items-center gap-2 flex-1">
+<div class="w-14 h-14 rounded-full bg-white/10 border border-white/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-2xl">mic</span>
+</div>
+<span class="text-[10px] text-slate-400 font-medium uppercase tracking-wide">Mute</span>
+</button>
+<button class="flex flex-col items-center gap-2 flex-1">
+<div class="w-14 h-14 rounded-full bg-white/10 border border-white/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-2xl">volume_up</span>
+</div>
+<span class="text-[10px] text-slate-400 font-medium uppercase tracking-wide">Speaker</span>
+</button>
+<button class="flex flex-col items-center gap-2 flex-1">
+<div class="w-14 h-14 rounded-full bg-white/10 border border-white/5 flex items-center justify-center">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-white text-base">pause</span>
+<span class="material-symbols-outlined text-white text-base -ml-1">replay</span>
+</div>
+</div>
+<span class="text-[10px] text-slate-400 font-medium uppercase tracking-wide">Reset Turn</span>
+</button>
+<button class="flex flex-col items-center gap-2 flex-1">
+<div class="w-14 h-14 rounded-full bg-red-500 flex items-center justify-center shadow-lg shadow-red-500/20">
+<span class="material-symbols-outlined text-white text-2xl">call_end</span>
+</div>
+<span class="text-[10px] text-red-500 font-bold uppercase tracking-wide">End Call</span>
+</button>
+</div>
+</footer>
+</div>
+<div class="fixed inset-0 z-50 flex items-end justify-center bg-black/40 modal-blur">
+<div class="w-full bg-[#1c1c1e] rounded-t-[2.5rem] px-6 pt-3 pb-12 shadow-2xl border-t border-white/10 animate-slide-up max-w-md">
+<div class="w-12 h-1.5 bg-white/20 rounded-full mx-auto mb-6"></div>
+<div class="mb-6">
+<h2 class="text-xl font-semibold text-center mb-1">Why are you ending the call?</h2>
+<p class="text-slate-400 text-sm text-center">Your feedback helps improve your coach.</p>
+</div>
+<div class="space-y-3 mb-8">
+<label class="flex items-center justify-between w-full p-4 rounded-2xl bg-white/5 border border-white/5 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary transition-all">
+<span class="text-sm font-medium">I've finished my practice</span>
+<input checked="" class="w-5 h-5 text-primary bg-transparent border-white/20 focus:ring-primary rounded-full" name="reason" type="radio"/>
+</label>
+<label class="flex items-center justify-between w-full p-4 rounded-2xl bg-white/5 border border-white/5 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary transition-all">
+<span class="text-sm font-medium">It's a bad time</span>
+<input class="w-5 h-5 text-primary bg-transparent border-white/20 focus:ring-primary rounded-full" name="reason" type="radio"/>
+</label>
+<label class="flex items-center justify-between w-full p-4 rounded-2xl bg-white/5 border border-white/5 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary transition-all">
+<span class="text-sm font-medium">The AI didn't understand me</span>
+<input class="w-5 h-5 text-primary bg-transparent border-white/20 focus:ring-primary rounded-full" name="reason" type="radio"/>
+</label>
+<label class="flex items-center justify-between w-full p-4 rounded-2xl bg-white/5 border border-white/5 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary transition-all">
+<span class="text-sm font-medium">Technical issues</span>
+<input class="w-5 h-5 text-primary bg-transparent border-white/20 focus:ring-primary rounded-full" name="reason" type="radio"/>
+</label>
+<label class="flex items-center justify-between w-full p-4 rounded-2xl bg-white/5 border border-white/5 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary transition-all">
+<span class="text-sm font-medium">Other</span>
+<input class="w-5 h-5 text-primary bg-transparent border-white/20 focus:ring-primary rounded-full" name="reason" type="radio"/>
+</label>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-4 rounded-full transition-colors shadow-lg shadow-primary/20">
+                Submit &amp; Close
+            </button>
+</div>
+</div>
+<div class="fixed bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-white/20 rounded-full z-[60]"></div>
+
+</body></html>
