@@ -62,6 +62,7 @@ class CreateAccountScreen extends StatelessWidget {
       final loginResponse = await ApiService.login(
         provider: oauthData['provider'],
         oauthId: oauthData['oauth_id'],
+        idToken: oauthData['id_token'],
       );
       if (loginResponse.success) {
         await StubServices.setLoggedIn(true);

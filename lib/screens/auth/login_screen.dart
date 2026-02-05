@@ -21,6 +21,7 @@ class LoginScreen extends StatelessWidget {
     final loginResponse = await ApiService.login(
       provider: provider,
       oauthId: mockOAuthData['oauth_id']!,
+      idToken: mockOAuthData['id_token']!,
     );
 
     if (!context.mounted) return;

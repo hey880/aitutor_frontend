@@ -117,6 +117,7 @@ class ApiService {
   static Future<ApiResponse> login({
     required String provider,
     required String oauthId,
+    required String idToken,
   }) async {
     try {
       final response = await http.post(
@@ -125,6 +126,7 @@ class ApiService {
         body: jsonEncode({
           'oauth_provider': provider,
           'oauth_id': oauthId,
+          'id_token': idToken,
         }),
       );
 
