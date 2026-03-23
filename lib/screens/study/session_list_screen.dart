@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../app/theme.dart';
 import '../../app/routes.dart';
-import '../../utils/stub_services.dart';
+import '../../services/api_service.dart';
 import '../../widgets/common/back_button.dart';
 
 /// Session list screen (Learning Archive).
@@ -15,18 +15,64 @@ class SessionListScreen extends StatefulWidget {
 
 class _SessionListScreenState extends State<SessionListScreen> {
   int _selectedTab = 0;
+  List<Map<String, dynamic>> _sessions = [];
+  bool _isLoading = true;
 
   final List<String> _tabs = ['All Sessions', 'Favorites', 'Completed'];
 
+  @override
+  void initState() {
+    super.initState();
+    _loadSessions();
+  }
+
+  Future<void> _loadSessions() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final response = await ApiService.get('/sessions/history?page=1&page_size=20');
+
+      if (response.success && mounted) {
+        final data = response.data;
+        setState(() {
+          _sessions = (data['sessions'] as List).map((s) {
+            return {
+              'session_id': s['session_id'],
+              'date': s['started_at'],
+              'topic': s['title'] ?? 'Untitled Session',
+              'title': s['title'],
+              'title_generated': s['title_generated'] ?? false,
+              'wordCount': s['message_count'] ?? 0,
+              'accuracy': s['avg_pronunciation_score']?.toInt() ?? 0,
+              'duration': _formatDuration(s['duration_minutes']),
+              'isFavorite': false,
+              'isCompleted': s['status'] == 'completed',
+            };
+          }).toList();
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error loading sessions: $e');
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  String _formatDuration(int? minutes) {
+    if (minutes == null) return '0:00';
+    return '${minutes.toString().padLeft(2, '0')}:00';
+  }
+
   List<Map<String, dynamic>> get _filteredSessions {
-    final sessions = StubServices.sessions;
     switch (_selectedTab) {
       case 1: // Favorites
-        return sessions.where((s) => s['isFavorite'] == true).toList();
+        return _sessions.where((s) => s['isFavorite'] == true).toList();
       case 2: // Completed
-        return sessions.where((s) => s['isCompleted'] == true).toList();
+        return _sessions.where((s) => s['isCompleted'] == true).toList();
       default: // All
-        return sessions;
+        return _sessions;
     }
   }
 
@@ -112,14 +158,16 @@ class _SessionListScreenState extends State<SessionListScreen> {
 
             // Session list
             Expanded(
-              child: _filteredSessions.isEmpty
-                  ? Center(
-                      child: Text(
-                        'No sessions found',
-                        style: AppTextStyles.bodyMedium(color: AppColors.slate400),
-                      ),
-                    )
-                  : ListView(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _filteredSessions.isEmpty
+                      ? Center(
+                          child: Text(
+                            'No sessions found',
+                            style: AppTextStyles.bodyMedium(color: AppColors.slate400),
+                          ),
+                        )
+                      : ListView(
                       padding: const EdgeInsets.all(24),
                       children: [
                         // This Week section
@@ -133,7 +181,11 @@ class _SessionListScreenState extends State<SessionListScreen> {
                           return _SessionCard(
                             session: session,
                             onPractice: () {
-                              Navigator.pushNamed(context, AppRoutes.sessionDetail);
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.sessionDetail,
+                                arguments: {'sessionId': session['session_id']},
+                              );
                             },
                           );
                         }),
@@ -151,7 +203,11 @@ class _SessionListScreenState extends State<SessionListScreen> {
                           return _SessionCard(
                             session: session,
                             onPractice: () {
-                              Navigator.pushNamed(context, AppRoutes.sessionDetail);
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.sessionDetail,
+                                arguments: {'sessionId': session['session_id']},
+                              );
                             },
                           );
                         }),
@@ -176,6 +232,9 @@ class _SessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final titleGenerated = session['title_generated'] ?? false;
+    final title = session['topic'] ?? 'Untitled Session';
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -199,16 +258,34 @@ class _SessionCard extends StatelessWidget {
                       style: AppTextStyles.labelSmall(color: AppColors.slate400),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      session['topic'] ?? '',
-                      style: AppTextStyles.bodyMedium()
-                          .copyWith(fontWeight: FontWeight.w600),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: AppTextStyles.bodyMedium()
+                                .copyWith(fontWeight: FontWeight.w600),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        // Show sparkle icon if AI-generated
+                        if (titleGenerated)
+                          Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: Icon(
+                              Icons.auto_awesome,
+                              size: 14,
+                              color: AppColors.primary.withValues(alpha: 0.6),
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),
               ),
               if (session['isFavorite'] == true)
-                Icon(
+                const Icon(
                   Icons.star,
                   size: 18,
                   color: Colors.amber,

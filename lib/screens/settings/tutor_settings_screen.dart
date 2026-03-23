@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../app/theme.dart';
+import '../../services/api_service.dart';
 import '../../utils/stub_services.dart';
 import '../../widgets/common/back_button.dart';
 import '../../widgets/common/primary_button.dart';
@@ -19,10 +20,10 @@ class _TutorSettingsScreenState extends State<TutorSettingsScreen> {
   double _speakingSpeed = 50;
 
   final List<Map<String, String>> _voices = [
-    {'name': 'Bella', 'style': 'Warm & Friendly'},
-    {'name': 'Marcus', 'style': 'Calm & Professional'},
-    {'name': 'Olivia', 'style': 'Energetic & Clear'},
-    {'name': 'James', 'style': 'Deep & Reassuring'},
+    {'id': 'female_friendly', 'name': 'Jenny', 'style': 'Friendly & Energetic'},
+    {'id': 'male_calm', 'name': 'Guy', 'style': 'Calm & Professional'},
+    {'id': 'female_warm', 'name': 'Aria', 'style': 'Warm & Direct'},
+    {'id': 'male_clear', 'name': 'Davis', 'style': 'Clear & Encouraging'},
   ];
 
   @override
@@ -43,9 +44,41 @@ class _TutorSettingsScreenState extends State<TutorSettingsScreen> {
     return 'Normal';
   }
 
-  void _save() {
-    // TODO: Save tutor settings
-    Navigator.pop(context);
+  Future<void> _save() async {
+    // Save tutor settings to backend
+    try {
+      final response = await ApiService.patch('/users/voice-settings', {
+        'voice_preset': _voices[_selectedVoice]['id'],
+      });
+
+      if (!mounted) return;
+
+      if (response.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Settings saved successfully'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save settings: ${response.message ?? "Unknown error"}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../app/theme.dart';
-import '../../widgets/common/back_button.dart';
+import '../../widgets/common/onboarding_header.dart';
 import '../../widgets/common/primary_button.dart';
 
 /// Intro card screen explaining the app concept.
@@ -13,64 +13,15 @@ class IntroCardScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
+        child: ListView(
           children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                children: [
-                  AppBackButton(
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  Expanded(
-                    child: Text(
-                      'Step 4 of 8',
-                      style: AppTextStyles.bodyMedium(color: AppColors.slate500)
-                          .copyWith(fontWeight: FontWeight.w500),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(width: 48),
-                ],
-              ),
-            ),
-
-            // Progress bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Onboarding Progress',
-                        style: AppTextStyles.bodyMedium(
-                          color: AppColors.textDark,
-                        ).copyWith(fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        '50%',
-                        style: AppTextStyles.bodyMedium(
-                          color: AppColors.primary,
-                        ).copyWith(fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(AppRadius.full),
-                    child: LinearProgressIndicator(
-                      value: 0.5,
-                      backgroundColor: AppColors.slate100,
-                      valueColor:
-                          const AlwaysStoppedAnimation<Color>(AppColors.primary),
-                      minHeight: 8,
-                    ),
-                  ),
-                ],
-              ),
+            // Header with progress bar
+            OnboardingHeader(
+              currentStep: 4,
+              totalSteps: 8,
+              stepTitle: 'How It Works',
+              showNextButton: true,
+              onNext: () => Navigator.pushNamed(context, '/onboarding/schedule-setup'),
             ),
 
             // Main content

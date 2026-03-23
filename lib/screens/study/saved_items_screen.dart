@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../app/theme.dart';
 import '../../app/routes.dart';
 import '../../utils/stub_services.dart';
+import '../../services/api_service.dart';
 import '../../widgets/common/bottom_nav_bar.dart';
 
 /// Saved items screen (Study Archive).
@@ -16,15 +17,96 @@ class SavedItemsScreen extends StatefulWidget {
 class _SavedItemsScreenState extends State<SavedItemsScreen> {
   String _selectedCategory = 'All';
   final TextEditingController _searchController = TextEditingController();
+  bool _isLoading = true;
+  List<Map<String, dynamic>> _bookmarks = [];
 
   final List<String> _categories = ['All', 'Vocabulary', 'Grammar', 'Pronunciation'];
 
-  List<Map<String, dynamic>> get _filteredItems {
-    final items = StubServices.savedItems;
-    if (_selectedCategory == 'All') {
-      return items;
+  @override
+  void initState() {
+    super.initState();
+    _loadBookmarks();
+  }
+
+  Future<void> _loadBookmarks() async {
+    try {
+      final response = await ApiService.get('/bookmarks');
+      if (response.success && mounted) {
+        setState(() {
+          _bookmarks = List<Map<String, dynamic>>.from(
+            response.data['bookmarks'] ?? []
+          );
+          _isLoading = false;
+        });
+      } else {
+        if (mounted) {
+          setState(() => _isLoading = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to load bookmarks: ${response.message}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('Error loading bookmarks: $e');
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
-    return items.where((item) => item['category'] == _selectedCategory).toList();
+  }
+
+  Future<void> _deleteBookmark(int bookmarkId) async {
+    try {
+      // Show confirmation dialog
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Delete Bookmark'),
+          content: const Text('Are you sure you want to delete this bookmark?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        ),
+      );
+
+      if (confirm != true) return;
+
+      // Delete from backend
+      final response = await ApiService.post('/bookmarks/$bookmarkId/delete', {});
+      if (response.success && mounted) {
+        // Remove from local list
+        setState(() {
+          _bookmarks.removeWhere((b) => b['bookmark_id'] == bookmarkId);
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Bookmark deleted'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error deleting bookmark: $e');
+    }
+  }
+
+  List<Map<String, dynamic>> get _filteredItems {
+    if (_selectedCategory == 'All') {
+      return _bookmarks;
+    }
+    // For now, return all items as we don't have category filtering from backend
+    // You could add category based on expression type later
+    return _bookmarks;
   }
 
   Color _getCategoryColor(String category) {
@@ -61,6 +143,14 @@ class _SavedItemsScreenState extends State<SavedItemsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: AppColors.lightBg,
+        body: const Center(child: CircularProgressIndicator()),
+        bottomNavigationBar: const BottomNavBar(currentIndex: 1),
+      );
+    }
+
     // Group items by date
     final thisWeekItems = _filteredItems.take(3).toList();
     final lastWeekItems = _filteredItems.skip(3).toList();
@@ -193,12 +283,16 @@ class _SavedItemsScreenState extends State<SavedItemsScreen> {
                           const SizedBox(height: 12),
                           ...thisWeekItems.map((item) => _LearningCard(
                                 item: item,
-                                categoryColor: _getCategoryColor(item['category']),
-                                categoryIcon: _getCategoryIcon(item['category']),
+                                categoryColor: _getCategoryColor(item['category'] ?? 'Vocabulary'),
+                                categoryIcon: _getCategoryIcon(item['category'] ?? 'Vocabulary'),
                                 onPractice: () {
                                   Navigator.pushNamed(
-                                      context, AppRoutes.phrasePractice);
+                                    context,
+                                    AppRoutes.phrasePractice,
+                                    arguments: item,
+                                  );
                                 },
+                                onDelete: () => _deleteBookmark(item['bookmark_id']),
                               )),
                         ],
 
@@ -213,12 +307,16 @@ class _SavedItemsScreenState extends State<SavedItemsScreen> {
                           const SizedBox(height: 12),
                           ...lastWeekItems.map((item) => _LearningCard(
                                 item: item,
-                                categoryColor: _getCategoryColor(item['category']),
-                                categoryIcon: _getCategoryIcon(item['category']),
+                                categoryColor: _getCategoryColor(item['category'] ?? 'Vocabulary'),
+                                categoryIcon: _getCategoryIcon(item['category'] ?? 'Vocabulary'),
                                 onPractice: () {
                                   Navigator.pushNamed(
-                                      context, AppRoutes.phrasePractice);
+                                    context,
+                                    AppRoutes.phrasePractice,
+                                    arguments: item,
+                                  );
                                 },
+                                onDelete: () => _deleteBookmark(item['bookmark_id']),
                               )),
                         ],
                         const SizedBox(height: 24),
@@ -240,17 +338,23 @@ class _LearningCard extends StatelessWidget {
   final Color categoryColor;
   final IconData categoryIcon;
   final VoidCallback onPractice;
+  final VoidCallback? onDelete;
 
   const _LearningCard({
     required this.item,
     required this.categoryColor,
     required this.categoryIcon,
     required this.onPractice,
+    this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
-    final hasCorrection = item['correction'] != null;
+    // Adapt bookmark data to card format
+    final expression = item['expression'] ?? '';
+    final note = item['note'] ?? '';
+    final category = item['category'] ?? 'Vocabulary';
+    final createdAt = item['created_at'] ?? item['savedAt'];
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -273,18 +377,18 @@ class _LearningCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.full),
                 ),
                 child: Text(
-                  item['category'] ?? '',
+                  category,
                   style: AppTextStyles.labelSmall(color: categoryColor)
                       .copyWith(letterSpacing: 0.5),
                 ),
               ),
               const SizedBox(width: 8),
               Text(
-                _formatDate(item['savedAt']),
+                _formatDate(createdAt),
                 style: AppTextStyles.labelSmall(color: AppColors.slate400),
               ),
               const Spacer(),
-              Icon(
+              const Icon(
                 Icons.bookmark,
                 size: 20,
                 color: AppColors.primary,
@@ -293,58 +397,46 @@ class _LearningCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // "You said:" section
+          // Expression section
           Text(
-            'You said:',
+            'Expression:',
             style: AppTextStyles.labelSmall(color: AppColors.slate400),
           ),
           const SizedBox(height: 4),
           Text(
-            item['original'] ?? '',
-            style: AppTextStyles.bodyMedium(color: AppColors.slate600),
+            expression,
+            style: AppTextStyles.bodyLarge().copyWith(fontWeight: FontWeight.w600),
           ),
 
-          // Correction section (if applicable)
-          if (hasCorrection) ...[
+          // Note/Context section
+          if (note.isNotEmpty) ...[
             const SizedBox(height: 12),
-            Text(
-              'Correction:',
-              style: AppTextStyles.labelSmall(color: AppColors.slate400),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              item['correction'] ?? '',
-              style: AppTextStyles.bodyLarge().copyWith(fontWeight: FontWeight.w600),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(AppRadius.lg),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    categoryIcon,
+                    size: 18,
+                    color: categoryColor,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      note,
+                      style: AppTextStyles.bodySmall(color: AppColors.slate600),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
-
-          // Explanation card
-          const SizedBox(height: 12),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(AppRadius.lg),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  categoryIcon,
-                  size: 18,
-                  color: categoryColor,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    item['explanation'] ?? '',
-                    style: AppTextStyles.bodySmall(color: AppColors.slate600),
-                  ),
-                ),
-              ],
-            ),
-          ),
           const SizedBox(height: 12),
 
           // Bottom actions
@@ -374,14 +466,13 @@ class _LearningCard extends StatelessWidget {
                   // TODO: Share
                 },
               ),
-              IconButton(
-                icon: const Icon(Icons.delete_outline),
-                iconSize: 20,
-                color: AppColors.slate400,
-                onPressed: () {
-                  // TODO: Delete
-                },
-              ),
+              if (onDelete != null)
+                IconButton(
+                  icon: const Icon(Icons.delete_outline),
+                  iconSize: 20,
+                  color: AppColors.slate400,
+                  onPressed: onDelete,
+                ),
             ],
           ),
         ],

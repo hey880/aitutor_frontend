@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../app/theme.dart';
-import '../../widgets/common/back_button.dart';
+import '../../widgets/common/onboarding_header.dart';
 import '../../widgets/common/primary_button.dart';
 
 /// Learning goals selection screen.
@@ -35,6 +35,10 @@ class _LearningGoalsScreenState extends State<LearningGoalsScreen> {
     });
   }
 
+  void _navigateToNext() {
+    Navigator.pushNamed(context, '/onboarding/challenges');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,67 +46,13 @@ class _LearningGoalsScreenState extends State<LearningGoalsScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: [
-                  AppBackButton(
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  Expanded(
-                    child: Text(
-                      'Step 2 of 8',
-                      style: AppTextStyles.bodyLarge().copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(width: 48), // Balance for back button
-                ],
-              ),
-            ),
-
-            // Progress bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'ONBOARDING PROGRESS',
-                        style: AppTextStyles.labelSmall(
-                          color: AppColors.slate500,
-                        ).copyWith(
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 1.5,
-                        ),
-                      ),
-                      Text(
-                        '25%',
-                        style: AppTextStyles.labelLarge(
-                          color: AppColors.primary,
-                        ).copyWith(fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(AppRadius.full),
-                    child: LinearProgressIndicator(
-                      value: 0.25,
-                      backgroundColor: AppColors.slate100,
-                      valueColor:
-                          const AlwaysStoppedAnimation<Color>(AppColors.primary),
-                      minHeight: 6,
-                    ),
-                  ),
-                ],
-              ),
+            // Header with progress bar
+            OnboardingHeader(
+              currentStep: 2,
+              totalSteps: 8,
+              stepTitle: 'Learning Goals',
+              showNextButton: _selectedIndices.isNotEmpty,
+              onNext: _selectedIndices.isNotEmpty ? _navigateToNext : null,
             ),
 
             // Title
@@ -162,14 +112,7 @@ class _LearningGoalsScreenState extends State<LearningGoalsScreen> {
               child: PrimaryButton(
                 text: 'Next',
                 leadingIcon: Icons.arrow_forward,
-                onPressed: _selectedIndices.isNotEmpty
-                    ? () {
-                        Navigator.pushNamed(
-                          context,
-                          '/onboarding/challenges',
-                        );
-                      }
-                    : null,
+                onPressed: _selectedIndices.isNotEmpty ? _navigateToNext : null,
               ),
             ),
             const SizedBox(height: 16),

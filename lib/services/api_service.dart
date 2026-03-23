@@ -18,6 +18,8 @@ class ApiService {
   static const String _userIdKey = 'user_id';
   static const String _oauthDataKey = 'pending_oauth_data';
   static const String _onboardingLevelKey = 'onboarding_level';
+  static const String _onboardingVoiceKey = 'onboarding_voice';
+  static const String _onboardingScheduleKey = 'onboarding_schedule';
 
   /// Get the appropriate base URL based on platform
   static String get baseUrl => _baseUrl; // TODO: detect platform
@@ -28,12 +30,14 @@ class ApiService {
 
   static Future<void> saveTokens({
     required String accessToken,
-    required String refreshToken,
+    String? refreshToken,
     required int userId,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_tokenKey, accessToken);
-    await prefs.setString(_refreshTokenKey, refreshToken);
+    if (refreshToken != null) {
+      await prefs.setString(_refreshTokenKey, refreshToken);
+    }
     await prefs.setInt(_userIdKey, userId);
   }
 
@@ -109,6 +113,47 @@ class ApiService {
   }
 
   // ===========================================================================
+  // ONBOARDING VOICE DATA (voice selection during onboarding)
+  // ===========================================================================
+
+  /// Save selected voice during onboarding (voice preset ID)
+  static Future<void> saveOnboardingVoice(String voicePreset) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_onboardingVoiceKey, voicePreset);
+  }
+
+  /// Get the selected voice from onboarding
+  static Future<String?> getOnboardingVoice() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_onboardingVoiceKey);
+  }
+
+  /// Clear onboarding voice after registration
+  static Future<void> clearOnboardingVoice() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_onboardingVoiceKey);
+  }
+
+  /// Save selected schedule during onboarding
+  /// [scheduleData] - JSON string containing days and times
+  static Future<void> saveOnboardingSchedule(String scheduleData) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_onboardingScheduleKey, scheduleData);
+  }
+
+  /// Get the selected schedule from onboarding
+  static Future<String?> getOnboardingSchedule() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_onboardingScheduleKey);
+  }
+
+  /// Clear onboarding schedule after registration
+  static Future<void> clearOnboardingSchedule() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_onboardingScheduleKey);
+  }
+
+  // ===========================================================================
   // AUTH API CALLS
   // ===========================================================================
 
@@ -134,7 +179,7 @@ class ApiService {
         final data = jsonDecode(response.body);
         await saveTokens(
           accessToken: data['access_token'],
-          refreshToken: data['refresh_token'],
+          refreshToken: data['refresh_token'],  // Can be null
           userId: data['user_id'],
         );
         return ApiResponse(success: true, data: data);
@@ -192,7 +237,7 @@ class ApiService {
         final data = jsonDecode(response.body);
         await saveTokens(
           accessToken: data['access_token'],
-          refreshToken: data['refresh_token'],
+          refreshToken: data['refresh_token'],  // Can be null
           userId: data['user_id'],
         );
         await clearPendingOAuthData();
@@ -258,6 +303,74 @@ class ApiService {
     try {
       final token = await getAccessToken();
       final response = await http.post(
+        Uri.parse('$baseUrl$endpoint'),
+        headers: {
+          'Content-Type': 'application/json',
+          if (token != null) 'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return ApiResponse(
+          success: true,
+          statusCode: response.statusCode,
+          data: response.body.isNotEmpty ? jsonDecode(response.body) : null,
+        );
+      } else {
+        return ApiResponse(
+          success: false,
+          statusCode: response.statusCode,
+          message: 'Request failed',
+        );
+      }
+    } catch (e) {
+      return ApiResponse(success: false, message: 'Network error: $e');
+    }
+  }
+
+  /// Make authenticated PATCH request
+  static Future<ApiResponse> patch(
+    String endpoint,
+    Map<String, dynamic> body,
+  ) async {
+    try {
+      final token = await getAccessToken();
+      final response = await http.patch(
+        Uri.parse('$baseUrl$endpoint'),
+        headers: {
+          'Content-Type': 'application/json',
+          if (token != null) 'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return ApiResponse(
+          success: true,
+          statusCode: response.statusCode,
+          data: response.body.isNotEmpty ? jsonDecode(response.body) : null,
+        );
+      } else {
+        return ApiResponse(
+          success: false,
+          statusCode: response.statusCode,
+          message: 'Request failed',
+        );
+      }
+    } catch (e) {
+      return ApiResponse(success: false, message: 'Network error: $e');
+    }
+  }
+
+  /// Make authenticated PUT request
+  static Future<ApiResponse> put(
+    String endpoint,
+    Map<String, dynamic> body,
+  ) async {
+    try {
+      final token = await getAccessToken();
+      final response = await http.put(
         Uri.parse('$baseUrl$endpoint'),
         headers: {
           'Content-Type': 'application/json',

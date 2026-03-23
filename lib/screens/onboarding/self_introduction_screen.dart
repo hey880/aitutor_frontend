@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../app/theme.dart';
-import '../../widgets/common/back_button.dart';
+import '../../widgets/common/onboarding_header.dart';
 import '../../widgets/common/primary_button.dart';
 
 /// Self introduction screen for users to describe themselves.
@@ -35,62 +35,13 @@ class _SelfIntroductionScreenState extends State<SelfIntroductionScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Row(
-                children: [
-                  AppBackButton(
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  Expanded(
-                    child: Text(
-                      'STEP 8 OF 8',
-                      style: AppTextStyles.labelSmall(color: AppColors.slate400)
-                          .copyWith(
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1.5,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(width: 48),
-                ],
-              ),
-            ),
-
-            // Progress bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Onboarding completion',
-                        style: AppTextStyles.bodySmall(color: AppColors.slate400),
-                      ),
-                      Text(
-                        '100%',
-                        style: AppTextStyles.labelLarge(color: AppColors.primary)
-                            .copyWith(fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(AppRadius.full),
-                    child: LinearProgressIndicator(
-                      value: 1.0,
-                      backgroundColor: AppColors.slate100,
-                      valueColor:
-                          const AlwaysStoppedAnimation<Color>(AppColors.primary),
-                      minHeight: 6,
-                    ),
-                  ),
-                ],
-              ),
+            // Header with progress bar
+            OnboardingHeader(
+              currentStep: 8,
+              totalSteps: 8,
+              stepTitle: 'Self Introduction',
+              showNextButton: true,
+              onNext: _navigateToNext,
             ),
 
             // Content

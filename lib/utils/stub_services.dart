@@ -44,7 +44,7 @@ class StubServices {
   // ===========================================================================
 
   static String displayName = 'Alex Smith';
-  static String tutorName = 'Professor Sarah';
+  static String tutorName = 'Alex';
   static String nickname = 'Alex';
   static String dateOfBirth = '1995-03-15';
   static String gender = 'Male';

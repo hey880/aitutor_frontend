@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../app/theme.dart';
 import '../../services/api_service.dart';
-import '../../widgets/common/back_button.dart';
-import '../../widgets/common/onboarding_progress_bar.dart';
+import '../../widgets/common/onboarding_header.dart';
 import '../../widgets/common/primary_button.dart';
 
 /// Proficiency level selection screen.
@@ -17,6 +16,17 @@ class ProficiencyLevelScreen extends StatefulWidget {
 class _ProficiencyLevelScreenState extends State<ProficiencyLevelScreen> {
   // Default selection: Intermediate (index 1)
   int? _selectedIndex = 1;
+
+  Future<void> _navigateToNext() async {
+    if (_selectedIndex == null) return;
+    // Map UI index to API level (backend: beginner, intermediate, advanced)
+    final levelMap = ['beginner', 'intermediate', 'advanced', 'advanced'];
+    final level = levelMap[_selectedIndex!];
+    await ApiService.saveOnboardingLevel(level);
+    if (mounted) {
+      Navigator.pushNamed(context, '/onboarding/learning-goals');
+    }
+  }
 
   final List<_ProficiencyOption> _options = [
     _ProficiencyOption(
@@ -48,53 +58,13 @@ class _ProficiencyLevelScreenState extends State<ProficiencyLevelScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                children: [
-                  AppBackButton(
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  Expanded(
-                    child: Text(
-                      'Onboarding',
-                      style: AppTextStyles.titleMedium(),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(width: 48), // Balance for back button
-                ],
-              ),
-            ),
-
-            // Progress bar
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Step 1: Proficiency',
-                        style: AppTextStyles.bodyMedium(
-                          color: AppColors.textDark,
-                        ).copyWith(fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        '1 of 8',
-                        style: AppTextStyles.bodyMedium(
-                          color: AppColors.slate500,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  const OnboardingProgressBar(currentStep: 1, totalSteps: 8),
-                ],
-              ),
+            // Header with progress bar
+            OnboardingHeader(
+              currentStep: 1,
+              totalSteps: 8,
+              stepTitle: 'Proficiency Level',
+              showNextButton: _selectedIndex != null,
+              onNext: _selectedIndex != null ? () => _navigateToNext() : null,
             ),
 
             // Title
@@ -148,20 +118,7 @@ class _ProficiencyLevelScreenState extends State<ProficiencyLevelScreen> {
               child: PrimaryButton(
                 text: 'Next',
                 leadingIcon: Icons.arrow_forward,
-                onPressed: _selectedIndex != null
-                    ? () async {
-                        // Map UI index to API level (backend: beginner, intermediate, advanced)
-                        final levelMap = ['beginner', 'intermediate', 'advanced', 'advanced'];
-                        final level = levelMap[_selectedIndex!];
-                        await ApiService.saveOnboardingLevel(level);
-                        if (context.mounted) {
-                          Navigator.pushNamed(
-                            context,
-                            '/onboarding/learning-goals',
-                          );
-                        }
-                      }
-                    : null,
+                onPressed: _selectedIndex != null ? _navigateToNext : null,
               ),
             ),
             const SizedBox(height: 16),

@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../app/theme.dart';
-import '../../widgets/common/back_button.dart';
+import '../../services/api_service.dart';
+import '../../widgets/common/onboarding_header.dart';
 import '../../widgets/common/primary_button.dart';
 
 /// Schedule setup screen for selecting practice days and times.
@@ -55,7 +57,74 @@ class _ScheduleSetupScreenState extends State<ScheduleSetupScreen> {
     });
   }
 
+  Future<void> _editTime(int dayIndex) async {
+    final currentTime = _scheduleTimes[dayIndex];
+    if (currentTime == null) return;
+
+    // Convert 12-hour format to 24-hour format for TimeOfDay
+    int hour = currentTime.hour;
+    final minute = currentTime.minute;
+    final isPM = currentTime.isPm;
+
+    // Convert to 24-hour format
+    if (isPM && hour != 12) {
+      hour += 12;
+    }
+    if (!isPM && hour == 12) {
+      hour = 0;
+    }
+
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: hour, minute: minute),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: AppColors.primary,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() {
+        // Convert back to 12-hour format
+        final h = picked.hourOfPeriod == 0 ? 12 : picked.hourOfPeriod;
+        final m = picked.minute;
+        final period = picked.period == DayPeriod.am ? false : true;
+        _scheduleTimes[dayIndex] = _ScheduleTime(hour: h, minute: m, isPm: period);
+      });
+    }
+  }
+
   bool get _isValid => _selectedDays.isNotEmpty;
+
+  Future<void> _saveAndContinue() async {
+    if (!_isValid) return;
+
+    // Convert schedule data to JSON format
+    final scheduleData = {
+      'days': _selectedDays.toList()..sort(),
+      'times': _scheduleTimes.map((key, value) => MapEntry(
+        key.toString(),
+        {
+          'hour': value.hour,
+          'minute': value.minute,
+          'isPm': value.isPm,
+        },
+      )),
+    };
+
+    // Save to SharedPreferences
+    await ApiService.saveOnboardingSchedule(jsonEncode(scheduleData));
+
+    // Navigate to next screen
+    if (!mounted) return;
+    Navigator.pushNamed(context, '/onboarding/choose-voice');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,61 +133,13 @@ class _ScheduleSetupScreenState extends State<ScheduleSetupScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                children: [
-                  AppBackButton(
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  Expanded(
-                    child: Text(
-                      'Onboarding',
-                      style: AppTextStyles.titleMedium(),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(width: 48),
-                ],
-              ),
-            ),
-
-            // Progress bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'AI Tutor Schedule',
-                        style: AppTextStyles.bodyMedium(
-                          color: AppColors.textDark,
-                        ).copyWith(fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        'Step 5 of 8',
-                        style: AppTextStyles.bodyMedium(
-                          color: AppColors.slate500,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(AppRadius.full),
-                    child: LinearProgressIndicator(
-                      value: 0.625,
-                      backgroundColor: AppColors.slate100,
-                      valueColor:
-                          const AlwaysStoppedAnimation<Color>(AppColors.primary),
-                      minHeight: 8,
-                    ),
-                  ),
-                ],
-              ),
+            // Header with progress bar
+            OnboardingHeader(
+              currentStep: 5,
+              totalSteps: 8,
+              stepTitle: 'AI Tutor Schedule',
+              showNextButton: _isValid,
+              onNext: _isValid ? _saveAndContinue : null,
             ),
 
             Expanded(
@@ -199,9 +220,7 @@ class _ScheduleSetupScreenState extends State<ScheduleSetupScreen> {
                                 child: _TimeCard(
                                   dayName: _dayNames[dayIndex],
                                   time: time,
-                                  onEdit: () {
-                                    // TODO: Show time picker
-                                  },
+                                  onEdit: () => _editTime(dayIndex),
                                   onRemove: () => _removeSchedule(dayIndex),
                                 ),
                               );
@@ -291,14 +310,7 @@ class _ScheduleSetupScreenState extends State<ScheduleSetupScreen> {
               child: PrimaryButton(
                 text: 'Set Schedule & Continue',
                 leadingIcon: Icons.arrow_forward,
-                onPressed: _isValid
-                    ? () {
-                        Navigator.pushNamed(
-                          context,
-                          '/onboarding/choose-voice',
-                        );
-                      }
-                    : null,
+                onPressed: _isValid ? _saveAndContinue : null,
               ),
             ),
           ],

@@ -99,7 +99,11 @@ Map<String, WidgetBuilder> getRoutes() {
     // Call
     AppRoutes.incomingCall: (context) => const IncomingCallScreen(),
     AppRoutes.activeCall: (context) => const ActiveCallScreen(),
-    AppRoutes.activeCallChat: (context) => const ActiveCallChatScreen(),
+    AppRoutes.activeCallChat: (context) {
+      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final sessionId = args?['sessionId'] as int? ?? 1; // Default to 1 for testing
+      return ActiveCallChatScreen(sessionId: sessionId);
+    },
 
     // Onboarding
     AppRoutes.proficiencyLevel: (context) => const ProficiencyLevelScreen(),
@@ -118,7 +122,11 @@ Map<String, WidgetBuilder> getRoutes() {
 
     // Performance
     AppRoutes.phrasePractice: (context) => const PhrasePracticeScreen(),
-    AppRoutes.sessionDetail: (context) => const SessionDetailScreen(),
+    AppRoutes.sessionDetail: (context) {
+      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final sessionId = args?['sessionId'] as int? ?? 1; // Default to 1 for testing
+      return SessionDetailScreen(sessionId: sessionId);
+    },
 
     // Settings
     AppRoutes.settings: (context) => const SettingsScreen(),

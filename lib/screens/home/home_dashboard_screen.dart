@@ -50,11 +50,11 @@ class _HomeDashboardScreenState extends State<HomeDashboardScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Sarah name
+                    // Alex name
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
                       child: Text(
-                        'Sarah',
+                        'Alex',
                         style: AppTextStyles.titleLarge().copyWith(
                           fontSize: 28,
                         ),

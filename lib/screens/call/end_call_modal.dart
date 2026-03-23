@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import '../../app/theme.dart';
 import '../../app/routes.dart';
+import '../../services/api_service.dart';
 
 /// End call modal with feedback options.
 /// Original: active_ai_conversation_1 (modal)
 class EndCallModal extends StatefulWidget {
-  const EndCallModal({super.key});
+  final int? sessionId;
+
+  const EndCallModal({
+    super.key,
+    this.sessionId,
+  });
 
   @override
   State<EndCallModal> createState() => _EndCallModalState();
@@ -22,16 +28,87 @@ class _EndCallModalState extends State<EndCallModal> {
     "Other",
   ];
 
-  void _submitAndClose() {
-    // Close modal
-    Navigator.pop(context);
-
-    // Navigate to session detail (performance summary) and clear call stack
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.sessionDetail,
-      (route) => route.settings.name == AppRoutes.home,
+  void _submitAndClose() async {
+    // Show loading dialog while ending session & generating title
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Saving session...',
+              style: AppTextStyles.bodyMedium(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
     );
+
+    try {
+      // End session (backend generates title)
+      final response = await ApiService.post(
+        '/sessions/${widget.sessionId}/end',
+        {},
+      );
+
+      if (!mounted) return;
+
+      Navigator.pop(context); // Close loading dialog
+
+      if (response.success) {
+        Navigator.pop(context); // Close modal
+
+        // Navigate to Learning Archive (CHANGED from sessionDetail)
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.sessionList,
+          (route) => route.settings.name == AppRoutes.home,
+        );
+
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Session saved to Learning Archive',
+              style: AppTextStyles.bodyMedium(color: Colors.white),
+            ),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      } else {
+        Navigator.pop(context); // Close modal
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Failed to end session: ${response.message}',
+              style: AppTextStyles.bodyMedium(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.pop(context); // Close loading
+        Navigator.pop(context); // Close modal
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Error: $e',
+              style: AppTextStyles.bodyMedium(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override

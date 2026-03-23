@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../app/theme.dart';
-import '../../widgets/common/back_button.dart';
+import '../../widgets/common/onboarding_header.dart';
 import '../../widgets/common/primary_button.dart';
+import '../../services/audio_player_service.dart';
+import '../../services/api_service.dart';
 
 /// Voice selection screen for choosing AI tutor voice.
 /// Original: choose_ai_voice
@@ -15,13 +18,120 @@ class ChooseVoiceScreen extends StatefulWidget {
 class _ChooseVoiceScreenState extends State<ChooseVoiceScreen> {
   // Default selection: First voice (Female - Friendly)
   int? _selectedIndex = 0;
+  bool _isPlayingSample = false;
+  int? _playingIndex;
 
-  final List<String> _voices = [
-    'Female - Friendly & Energetic',
-    'Male - Calm & Professional',
-    'Female - Warm & Direct',
-    'Male - Clear & Encouraging',
+  final AudioPlayerService _audioPlayer = AudioPlayerService();
+
+  final List<Map<String, String>> _voices = [
+    {
+      'id': 'female_friendly',
+      'name': 'Female - Friendly & Energetic',
+    },
+    {
+      'id': 'male_calm',
+      'name': 'Male - Calm & Professional',
+    },
+    {
+      'id': 'female_warm',
+      'name': 'Female - Warm & Direct',
+    },
+    {
+      'id': 'male_clear',
+      'name': 'Male - Clear & Encouraging',
+    },
   ];
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
+  Future<void> _playSample(int index) async {
+    setState(() {
+      _isPlayingSample = true;
+      _playingIndex = index;
+    });
+
+    try {
+      // Add timeout to prevent indefinite waiting
+      final response = await ApiService.post('/tts/sample', {
+        'voice_preset': _voices[index]['id'],
+      }).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw TimeoutException('Request timed out');
+        },
+      );
+
+      if (response.success && mounted) {
+        final audioBase64 = response.data['audio_base64'] as String?;
+
+        // Check for empty audio data (Azure Speech not configured)
+        if (audioBase64 == null || audioBase64.isEmpty) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Voice preview is not available in demo mode'),
+                backgroundColor: Colors.orange,
+                duration: Duration(seconds: 3),
+              ),
+            );
+          }
+        } else {
+          await _audioPlayer.playFromBase64(audioBase64);
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to load voice sample: ${response.message ?? "Unknown error"}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } on TimeoutException {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Request timed out. Please check your connection.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error playing sample: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isPlayingSample = false;
+          _playingIndex = null;
+        });
+      }
+    }
+  }
+
+  Future<void> _saveAndContinue() async {
+    if (_selectedIndex == null) return;
+
+    // Save voice selection temporarily to SharedPreferences
+    // It will be applied to the user account after registration
+    await ApiService.saveOnboardingVoice(_voices[_selectedIndex!]['id']!);
+
+    // Navigate to next screen immediately (no API call needed)
+    if (!mounted) return;
+    Navigator.pushNamed(context, '/onboarding/personal-details');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,44 +140,13 @@ class _ChooseVoiceScreenState extends State<ChooseVoiceScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                children: [
-                  AppBackButton(
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  Expanded(
-                    child: Text(
-                      'Step 6 of 8',
-                      style: AppTextStyles.titleMedium(),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(width: 48),
-                ],
-              ),
-            ),
-
-            // Segment progress bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-              child: Row(
-                children: List.generate(8, (index) {
-                  final isActive = index < 6;
-                  return Expanded(
-                    child: Container(
-                      height: 6,
-                      margin: EdgeInsets.only(right: index < 7 ? 6 : 0),
-                      decoration: BoxDecoration(
-                        color: isActive ? AppColors.primary : AppColors.slate100,
-                        borderRadius: BorderRadius.circular(AppRadius.full),
-                      ),
-                    ),
-                  );
-                }),
-              ),
+            // Header with progress bar
+            OnboardingHeader(
+              currentStep: 6,
+              totalSteps: 8,
+              stepTitle: 'Choose AI Voice',
+              showNextButton: _selectedIndex != null,
+              onNext: _selectedIndex != null ? _saveAndContinue : null,
             ),
 
             // Title
@@ -99,16 +178,15 @@ class _ChooseVoiceScreenState extends State<ChooseVoiceScreen> {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
                     child: _VoiceCard(
-                      title: _voices[index],
+                      title: _voices[index]['name']!,
                       isSelected: isSelected,
+                      isPlaying: _playingIndex == index,
                       onTap: () {
                         setState(() {
                           _selectedIndex = index;
                         });
                       },
-                      onPlaySample: () {
-                        // TODO: Play voice sample
-                      },
+                      onPlaySample: () => _playSample(index),
                     ),
                   );
                 },
@@ -127,14 +205,7 @@ class _ChooseVoiceScreenState extends State<ChooseVoiceScreen> {
               child: PrimaryButton(
                 text: 'Select & Continue',
                 leadingIcon: Icons.arrow_forward,
-                onPressed: _selectedIndex != null
-                    ? () {
-                        Navigator.pushNamed(
-                          context,
-                          '/onboarding/personal-details',
-                        );
-                      }
-                    : null,
+                onPressed: _selectedIndex != null ? _saveAndContinue : null,
               ),
             ),
             const SizedBox(height: 16),
@@ -148,12 +219,14 @@ class _ChooseVoiceScreenState extends State<ChooseVoiceScreen> {
 class _VoiceCard extends StatelessWidget {
   final String title;
   final bool isSelected;
+  final bool isPlaying;
   final VoidCallback onTap;
   final VoidCallback onPlaySample;
 
   const _VoiceCard({
     required this.title,
     required this.isSelected,
+    this.isPlaying = false,
     required this.onTap,
     required this.onPlaySample,
   });
@@ -198,27 +271,42 @@ class _VoiceCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             GestureDetector(
-              onTap: onPlaySample,
+              onTap: isPlaying ? null : onPlaySample,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
-                  color: AppColors.slate100.withValues(alpha: 0.5),
+                  color: isPlaying
+                      ? AppColors.primary.withValues(alpha: 0.1)
+                      : AppColors.slate100.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(AppRadius.lg),
-                  border: Border.all(color: AppColors.slate200),
+                  border: Border.all(
+                    color: isPlaying ? AppColors.primary : AppColors.slate200,
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.play_circle_outline,
-                      size: 18,
-                      color: AppColors.slate700,
-                    ),
+                    if (isPlaying)
+                      SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        ),
+                      )
+                    else
+                      Icon(
+                        Icons.play_circle_outline,
+                        size: 18,
+                        color: AppColors.slate700,
+                      ),
                     const SizedBox(width: 8),
                     Text(
-                      'Play Sample',
-                      style: AppTextStyles.bodyMedium(color: AppColors.slate700)
-                          .copyWith(fontWeight: FontWeight.w500),
+                      isPlaying ? 'Playing...' : 'Play Sample',
+                      style: AppTextStyles.bodyMedium(
+                        color: isPlaying ? AppColors.primary : AppColors.slate700,
+                      ).copyWith(fontWeight: FontWeight.w500),
                     ),
                   ],
                 ),

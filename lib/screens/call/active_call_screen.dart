@@ -188,6 +188,8 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                                         ? Colors.white
                                         : AppColors.slate400,
                                   ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                 ),
                               ),
                             ),
@@ -212,6 +214,8 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                                         ? Colors.white
                                         : AppColors.slate400,
                                   ),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                 ),
                               ),
                             ),

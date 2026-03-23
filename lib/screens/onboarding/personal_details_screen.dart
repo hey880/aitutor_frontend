@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../app/theme.dart';
-import '../../widgets/common/back_button.dart';
+import '../../widgets/common/onboarding_header.dart';
 import '../../widgets/common/primary_button.dart';
 
 /// Personal details screen for collecting user information.
@@ -60,62 +60,13 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                children: [
-                  AppBackButton(
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  Expanded(
-                    child: Text(
-                      'Step 7 of 8',
-                      style: AppTextStyles.bodyMedium(color: AppColors.slate500)
-                          .copyWith(fontWeight: FontWeight.w500),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(width: 48),
-                ],
-              ),
-            ),
-
-            // Progress bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Setup Progress',
-                        style: AppTextStyles.bodyMedium(
-                          color: AppColors.textDark,
-                        ).copyWith(fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        '87.5%',
-                        style: AppTextStyles.bodyMedium(
-                          color: AppColors.primary,
-                        ).copyWith(fontWeight: FontWeight.w700),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(AppRadius.full),
-                    child: LinearProgressIndicator(
-                      value: 0.875,
-                      backgroundColor: AppColors.slate100,
-                      valueColor:
-                          const AlwaysStoppedAnimation<Color>(AppColors.primary),
-                      minHeight: 8,
-                    ),
-                  ),
-                ],
-              ),
+            // Header with progress bar
+            OnboardingHeader(
+              currentStep: 7,
+              totalSteps: 8,
+              stepTitle: 'Personal Details',
+              showNextButton: _isValid,
+              onNext: _isValid ? () => Navigator.pushNamed(context, '/onboarding/self-introduction') : null,
             ),
 
             // Title

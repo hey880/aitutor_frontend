@@ -1,14 +1,56 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../app/theme.dart';
 import '../../app/routes.dart';
 import '../../services/api_service.dart';
 import '../../utils/stub_services.dart';
-import '../../widgets/common/back_button.dart';
+import '../../widgets/common/onboarding_header.dart';
 
 /// Create account screen - final onboarding step.
 /// Original: create_account
 class CreateAccountScreen extends StatelessWidget {
   const CreateAccountScreen({super.key});
+
+  /// Convert onboarding schedule format to backend API format
+  Map<String, dynamic> _convertScheduleForBackend(Map<String, dynamic> scheduleData) {
+    final List<dynamic> dayIndices = scheduleData['days'] ?? [];
+    final Map<String, dynamic> times = scheduleData['times'] ?? {};
+
+    // Convert day indices to day strings
+    const dayNames = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+    final preferredDays = dayIndices
+        .map((index) => dayNames[index as int])
+        .toList();
+
+    // Use the first day's time as the preferred time (simplified approach)
+    String? preferredTime;
+    if (dayIndices.isNotEmpty && times.isNotEmpty) {
+      final firstDayIndex = dayIndices[0].toString();
+      final timeData = times[firstDayIndex];
+      if (timeData != null) {
+        final hour = timeData['hour'] as int;
+        final minute = timeData['minute'] as int;
+        final isPm = timeData['isPm'] as bool;
+
+        // Convert 12-hour format to 24-hour format
+        int hour24;
+        if (isPm && hour != 12) {
+          hour24 = hour + 12;
+        } else if (!isPm && hour == 12) {
+          hour24 = 0;
+        } else {
+          hour24 = hour;
+        }
+
+        preferredTime = '${hour24.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}:00';
+      }
+    }
+
+    return {
+      'preferred_days': preferredDays,
+      'preferred_time': preferredTime,
+    };
+  }
 
   /// Complete registration with the saved OAuth data and selected level.
   Future<void> _completeRegistration(BuildContext context) async {
@@ -47,7 +89,39 @@ class CreateAccountScreen extends StatelessWidget {
     if (!context.mounted) return;
 
     if (response.success) {
-      // Registration successful
+      // Registration successful - now apply saved voice settings
+      final savedVoice = await ApiService.getOnboardingVoice();
+      if (savedVoice != null) {
+        try {
+          // JWT token is now available, so we can call the voice-settings API
+          await ApiService.patch('/users/voice-settings', {
+            'voice_preset': savedVoice,
+          });
+          // Clear the temporary voice data
+          await ApiService.clearOnboardingVoice();
+        } catch (e) {
+          // If voice settings fail, don't block the user flow
+          // They can change it later in Settings
+          print('Failed to apply voice settings: $e');
+        }
+      }
+
+      // Apply saved schedule settings
+      final savedSchedule = await ApiService.getOnboardingSchedule();
+      if (savedSchedule != null) {
+        try {
+          final scheduleData = jsonDecode(savedSchedule);
+          final convertedSchedule = _convertScheduleForBackend(scheduleData);
+
+          // Update user profile with schedule
+          await ApiService.put('/users/profile', convertedSchedule);
+          await ApiService.clearOnboardingSchedule();
+          print('Schedule applied successfully');
+        } catch (e) {
+          print('Failed to apply schedule settings: $e');
+        }
+      }
+
       await StubServices.setLoggedIn(true);
       if (context.mounted) {
         Navigator.pushNamedAndRemoveUntil(
@@ -65,6 +139,35 @@ class CreateAccountScreen extends StatelessWidget {
         idToken: oauthData['id_token'],
       );
       if (loginResponse.success) {
+        // Login successful - apply saved settings
+        // Apply voice settings
+        final savedVoice = await ApiService.getOnboardingVoice();
+        if (savedVoice != null) {
+          try {
+            await ApiService.patch('/users/voice-settings', {
+              'voice_preset': savedVoice,
+            });
+            await ApiService.clearOnboardingVoice();
+          } catch (e) {
+            print('Failed to apply voice settings: $e');
+          }
+        }
+
+        // Apply schedule settings
+        final savedSchedule = await ApiService.getOnboardingSchedule();
+        if (savedSchedule != null) {
+          try {
+            final scheduleData = jsonDecode(savedSchedule);
+            final convertedSchedule = _convertScheduleForBackend(scheduleData);
+
+            await ApiService.put('/users/profile', convertedSchedule);
+            await ApiService.clearOnboardingSchedule();
+            print('Schedule applied successfully');
+          } catch (e) {
+            print('Failed to apply schedule settings: $e');
+          }
+        }
+
         await StubServices.setLoggedIn(true);
         if (context.mounted) {
           Navigator.pushNamedAndRemoveUntil(
@@ -103,54 +206,11 @@ class CreateAccountScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Header
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                children: [
-                  AppBackButton(
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  const Expanded(child: SizedBox()),
-                ],
-              ),
-            ),
-
-            // Progress bar (Final Step)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Final Step',
-                        style: AppTextStyles.bodyMedium(
-                          color: AppColors.textDark,
-                        ).copyWith(fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        '3 of 3',
-                        style: AppTextStyles.bodyMedium(
-                          color: AppColors.slate500,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(AppRadius.full),
-                    child: LinearProgressIndicator(
-                      value: 1.0,
-                      backgroundColor: AppColors.slate100,
-                      valueColor:
-                          const AlwaysStoppedAnimation<Color>(AppColors.primary),
-                      minHeight: 8,
-                    ),
-                  ),
-                ],
-              ),
+            // Header with progress bar (Final step - 100% complete)
+            const OnboardingHeader(
+              currentStep: 8,
+              totalSteps: 8,
+              stepTitle: 'Create Account',
             ),
 
             // Center content

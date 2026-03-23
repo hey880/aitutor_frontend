@@ -3,6 +3,7 @@ import '../../app/theme.dart';
 import '../../utils/stub_services.dart';
 import '../../widgets/common/back_button.dart';
 import '../../widgets/common/primary_button.dart';
+import '../../services/api_service.dart';
 
 /// Edit schedule screen.
 /// Original: personal_information_5 + _6
@@ -14,8 +15,9 @@ class EditScheduleScreen extends StatefulWidget {
 }
 
 class _EditScheduleScreenState extends State<EditScheduleScreen> {
-  late List<bool> _selectedDays;
-  late List<String> _scheduleTimes;
+  List<bool> _selectedDays = List.filled(7, false);
+  List<String> _scheduleTimes = List.filled(7, '09:30 AM');
+  bool _isLoading = true;
 
   final List<String> _dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   final List<String> _dayNames = [
@@ -26,12 +28,66 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedDays = List.from(StubServices.selectedDays);
-    _scheduleTimes = List.from(StubServices.scheduleTimes);
-    // Ensure we have 7 times
-    while (_scheduleTimes.length < 7) {
-      _scheduleTimes.add('09:30 AM');
+    _loadSchedule();
+  }
+
+  Future<void> _loadSchedule() async {
+    try {
+      final response = await ApiService.get('/users/profile');
+
+      if (response.success && response.data != null) {
+        final profile = response.data as Map<String, dynamic>;
+
+        // Parse preferred_days: ["mon", "wed", "fri"]
+        final preferredDays = profile['preferred_days'] as List<dynamic>?;
+        if (preferredDays != null) {
+          final dayMap = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+          for (int i = 0; i < dayMap.length; i++) {
+            if (preferredDays.contains(dayMap[i])) {
+              _selectedDays[i] = true;
+            }
+          }
+        }
+
+        // Parse preferred_time: "20:30:00"
+        final preferredTime = profile['preferred_time'] as String?;
+        if (preferredTime != null) {
+          final formattedTime = _convert24HourTo12Hour(preferredTime);
+          // Set all selected days to use the same time
+          for (int i = 0; i < 7; i++) {
+            _scheduleTimes[i] = formattedTime;
+          }
+        }
+      }
+    } catch (e) {
+      print('Error loading schedule: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
+  }
+
+  String _convert24HourTo12Hour(String time24) {
+    // Input format: "20:30:00" or "20:30"
+    final parts = time24.split(':');
+    int hour = int.parse(parts[0]);
+    final minute = parts[1];
+
+    String period = 'AM';
+    if (hour >= 12) {
+      period = 'PM';
+      if (hour > 12) {
+        hour -= 12;
+      }
+    }
+    if (hour == 0) {
+      hour = 12;
+    }
+
+    return '$hour:$minute $period';
   }
 
   void _toggleDay(int index) {
@@ -82,9 +138,87 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
     });
   }
 
-  void _save() {
-    // TODO: Save schedule
-    Navigator.pop(context);
+  Future<void> _save() async {
+    // Map day indices to backend format
+    final dayMap = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+    final selectedDayStrings = <String>[];
+
+    for (int i = 0; i < _selectedDays.length; i++) {
+      if (_selectedDays[i]) {
+        selectedDayStrings.add(dayMap[i]);
+      }
+    }
+
+    if (selectedDayStrings.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please select at least one day'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Use the first selected day's time as preferred_time
+    // (Backend expects a single preferred_time)
+    final firstSelectedDayIndex = _selectedDays.indexWhere((day) => day);
+    final timeString = _scheduleTimes[firstSelectedDayIndex];
+
+    // Convert "9:30 AM" to "09:30" (24-hour format)
+    final parts = timeString.split(' ');
+    final timeParts = parts[0].split(':');
+    int hour = int.parse(timeParts[0]);
+    final minute = timeParts[1];
+    final isPM = parts[1] == 'PM';
+
+    if (isPM && hour != 12) hour += 12;
+    if (!isPM && hour == 12) hour = 0;
+
+    final time24 = '${hour.toString().padLeft(2, '0')}:$minute';
+
+    // Show loading
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+
+    try {
+      final response = await ApiService.put('/users/profile', {
+        'preferred_days': selectedDayStrings,
+        'preferred_time': time24,
+      });
+
+      if (!mounted) return;
+      Navigator.pop(context); // Close loading dialog
+
+      if (response.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Schedule updated successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pop(context); // Close edit screen
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update schedule: ${response.message}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context); // Close loading dialog
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -109,6 +243,14 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
               ),
             ),
 
+            // Loading indicator
+            if (_isLoading)
+              const Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            else
             // Content
             Expanded(
               child: SingleChildScrollView(
