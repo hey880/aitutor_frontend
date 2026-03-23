@@ -194,6 +194,15 @@ class _EditScheduleScreenState extends State<EditScheduleScreen> {
       Navigator.pop(context); // Close loading dialog
 
       if (response.success) {
+        // Register schedule with notification scheduler
+        try {
+          await ApiService.post('/notifications/schedule/update', {});
+          print('Notification schedule registered successfully');
+        } catch (e) {
+          print('Failed to register notification schedule: $e');
+        }
+
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Schedule updated successfully'),

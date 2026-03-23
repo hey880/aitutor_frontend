@@ -91,110 +91,112 @@ class SettingsScreen extends StatelessWidget {
 
             // Menu items
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    _SettingsItem(
-                      icon: Icons.manage_accounts,
-                      iconBgColor: AppColors.slate100,
-                      iconColor: AppColors.slate600,
-                      title: 'Account Settings',
-                      onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.editProfile);
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _SettingsItem(
-                      icon: Icons.smart_toy,
-                      iconBgColor: AppColors.primary.withValues(alpha: 0.1),
-                      iconColor: AppColors.primary,
-                      title: 'Tutor Settings',
-                      onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.tutorSettings);
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _SettingsItem(
-                      icon: Icons.insights,
-                      iconBgColor: AppColors.callGreen.withValues(alpha: 0.1),
-                      iconColor: AppColors.callGreen,
-                      title: 'Learning Activity',
-                      onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.learningActivity);
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _SettingsItem(
-                      icon: Icons.calendar_month,
-                      iconBgColor: Colors.amber.withValues(alpha: 0.1),
-                      iconColor: Colors.amber.shade700,
-                      title: 'Edit Schedule',
-                      onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.editSchedule);
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _SettingsItem(
-                      icon: Icons.help_center,
-                      iconBgColor: AppColors.slate100,
-                      iconColor: AppColors.slate600,
-                      title: 'Q&A Support',
-                      onTap: () {
-                        // TODO: Navigate to Q&A
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    _SettingsItem(
-                      icon: Icons.verified_user,
-                      iconBgColor: AppColors.slate100,
-                      iconColor: AppColors.slate600,
-                      title: 'Privacy Policy',
-                      onTap: () {
-                        // TODO: Navigate to privacy policy
-                      },
-                    ),
-                    const SizedBox(height: 24),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      _SettingsItem(
+                        icon: Icons.manage_accounts,
+                        iconBgColor: AppColors.slate100,
+                        iconColor: AppColors.slate600,
+                        title: 'Account Settings',
+                        onTap: () {
+                          Navigator.pushNamed(context, AppRoutes.editProfile);
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _SettingsItem(
+                        icon: Icons.smart_toy,
+                        iconBgColor: AppColors.primary.withValues(alpha: 0.1),
+                        iconColor: AppColors.primary,
+                        title: 'Tutor Settings',
+                        onTap: () {
+                          Navigator.pushNamed(context, AppRoutes.tutorSettings);
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _SettingsItem(
+                        icon: Icons.insights,
+                        iconBgColor: AppColors.callGreen.withValues(alpha: 0.1),
+                        iconColor: AppColors.callGreen,
+                        title: 'Learning Activity',
+                        onTap: () {
+                          Navigator.pushNamed(context, AppRoutes.learningActivity);
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _SettingsItem(
+                        icon: Icons.calendar_month,
+                        iconBgColor: Colors.amber.withValues(alpha: 0.1),
+                        iconColor: Colors.amber.shade700,
+                        title: 'Edit Schedule',
+                        onTap: () {
+                          Navigator.pushNamed(context, AppRoutes.editSchedule);
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _SettingsItem(
+                        icon: Icons.help_center,
+                        iconBgColor: AppColors.slate100,
+                        iconColor: AppColors.slate600,
+                        title: 'Q&A Support',
+                        onTap: () {
+                          // TODO: Navigate to Q&A
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _SettingsItem(
+                        icon: Icons.verified_user,
+                        iconBgColor: AppColors.slate100,
+                        iconColor: AppColors.slate600,
+                        title: 'Privacy Policy',
+                        onTap: () {
+                          // TODO: Navigate to privacy policy
+                        },
+                      ),
+                      const SizedBox(height: 24),
 
-                    // Logout button
-                    GestureDetector(
-                      onTap: () => _logout(context),
-                      child: Container(
-                        width: double.infinity,
-                        height: 56,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(AppRadius.full),
-                          border: Border.all(color: AppColors.callRed.withValues(alpha: 0.3)),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.logout,
-                              size: 20,
-                              color: AppColors.callRed,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Logout',
-                              style: AppTextStyles.bodyLarge(color: AppColors.callRed)
-                                  .copyWith(fontWeight: FontWeight.w600),
-                            ),
-                          ],
+                      // Logout button
+                      GestureDetector(
+                        onTap: () => _logout(context),
+                        child: Container(
+                          width: double.infinity,
+                          height: 56,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(AppRadius.full),
+                            border: Border.all(color: AppColors.callRed.withValues(alpha: 0.3)),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.logout,
+                                size: 20,
+                                color: AppColors.callRed,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Logout',
+                                style: AppTextStyles.bodyLarge(color: AppColors.callRed)
+                                    .copyWith(fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
 
-                    const Spacer(),
+                      const SizedBox(height: 24),
 
-                    // Version
-                    Text(
-                      'Version 1.4.2 (2024)',
-                      style: AppTextStyles.bodySmall(color: AppColors.slate400),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
+                      // Version
+                      Text(
+                        'Version 1.4.2 (2024)',
+                        style: AppTextStyles.bodySmall(color: AppColors.slate400),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
                 ),
               ),
             ),

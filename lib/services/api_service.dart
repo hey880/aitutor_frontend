@@ -8,9 +8,10 @@ class ApiService {
   // Base URL for API calls
   // Android emulator uses 10.0.2.2 to access host machine's localhost
   // iOS simulator uses localhost directly
-  // TODO: Add platform detection for iOS support
-  // static const String _baseUrl = 'http://10.0.2.2:8000/api';
-  static const String _baseUrl = 'http://localhost:8000/api';
+  // Real device: use PC's local IP address (192.168.219.107)
+  static const String _baseUrl = 'http://192.168.219.107:8000/api';
+  // static const String _baseUrl = 'http://10.0.2.2:8000/api';  // For emulator
+  // static const String _baseUrl = 'http://localhost:8000/api';  // For iOS simulator
 
   // Keys for SharedPreferences
   static const String _tokenKey = 'jwt_token';

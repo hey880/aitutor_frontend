@@ -115,6 +115,15 @@ class CreateAccountScreen extends StatelessWidget {
 
           // Update user profile with schedule
           await ApiService.put('/users/profile', convertedSchedule);
+
+          // Register schedule with notification scheduler
+          try {
+            await ApiService.post('/notifications/schedule/update', {});
+            print('Notification schedule registered successfully');
+          } catch (e) {
+            print('Failed to register notification schedule: $e');
+          }
+
           await ApiService.clearOnboardingSchedule();
           print('Schedule applied successfully');
         } catch (e) {
@@ -161,6 +170,15 @@ class CreateAccountScreen extends StatelessWidget {
             final convertedSchedule = _convertScheduleForBackend(scheduleData);
 
             await ApiService.put('/users/profile', convertedSchedule);
+
+            // Register schedule with notification scheduler
+            try {
+              await ApiService.post('/notifications/schedule/update', {});
+              print('Notification schedule registered successfully');
+            } catch (e) {
+              print('Failed to register notification schedule: $e');
+            }
+
             await ApiService.clearOnboardingSchedule();
             print('Schedule applied successfully');
           } catch (e) {
