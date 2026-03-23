@@ -2,19 +2,73 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import '../../app/theme.dart';
 import '../../app/routes.dart';
+import '../../services/api_service.dart';
 
 /// Incoming call screen - dark themed.
 /// Original: incoming_ai_call
-class IncomingCallScreen extends StatelessWidget {
+class IncomingCallScreen extends StatefulWidget {
   const IncomingCallScreen({super.key});
+
+  @override
+  State<IncomingCallScreen> createState() => _IncomingCallScreenState();
+}
+
+class _IncomingCallScreenState extends State<IncomingCallScreen> {
+  bool _isStartingSession = false;
+
+  Future<void> _onAcceptCall() async {
+    setState(() => _isStartingSession = true);
+
+    try {
+      // Start a new session
+      final response = await ApiService.post('/sessions/start', {});
+
+      if (response.success && mounted) {
+        final sessionId = response.data['session_id'] as int;
+        final aiGreeting = response.data['ai_greeting'] as String?;
+
+        // Navigate to active call chat screen with session ID
+        Navigator.pushReplacementNamed(
+          context,
+          AppRoutes.activeCallChat,
+          arguments: {
+            'sessionId': sessionId,
+            'aiGreeting': aiGreeting,
+          },
+        );
+      } else {
+        if (mounted) {
+          setState(() => _isStartingSession = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to start session: ${response.message}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('Error starting session: $e');
+      if (mounted) {
+        setState(() => _isStartingSession = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.darkBg,
       body: SafeArea(
-        child: Column(
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
             // Header
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
@@ -49,89 +103,89 @@ class IncomingCallScreen extends StatelessWidget {
             ),
 
             // Center content
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Avatar with glow
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Glow effect
-                      Container(
-                        width: 240,
-                        height: 240,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.primary.withValues(alpha: 0.1),
-                        ),
+            const SizedBox(height: 80),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Avatar with glow
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    // Glow effect
+                    Container(
+                      width: 240,
+                      height: 240,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.primary.withValues(alpha: 0.1),
                       ),
-                      // Main avatar circle
-                      Container(
-                        width: 192,
-                        height: 192,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white.withValues(alpha: 0.05),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.1),
-                            width: 1,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'S',
-                            style: TextStyle(
-                              fontSize: 64,
-                              fontWeight: FontWeight.w300,
-                              color: Colors.white.withValues(alpha: 0.8),
-                              letterSpacing: -2,
-                            ),
-                          ),
-                        ),
-                      ),
-                      // Inner border
-                      Container(
-                        width: 176,
-                        height: 176,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.05),
-                            width: 1,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 40),
-
-                  // Name
-                  Text(
-                    'Sarah',
-                    style: AppTextStyles.displayHero(color: Colors.white)
-                        .copyWith(fontSize: 48),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Scheduled text
-                  Text(
-                    'Scheduled Daily Practice',
-                    style: AppTextStyles.titleMedium(color: AppColors.primary)
-                        .copyWith(letterSpacing: 0.5),
-                  ),
-                  const SizedBox(height: 4),
-
-                  // Incoming call text
-                  Text(
-                    'Incoming AI Call...',
-                    style: AppTextStyles.bodyMedium(
-                      color: Colors.white.withValues(alpha: 0.4),
                     ),
+                    // Main avatar circle
+                    Container(
+                      width: 192,
+                      height: 192,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withValues(alpha: 0.05),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.1),
+                          width: 1,
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          'S',
+                          style: TextStyle(
+                            fontSize: 64,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.white.withValues(alpha: 0.8),
+                            letterSpacing: -2,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Inner border
+                    Container(
+                      width: 176,
+                      height: 176,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.05),
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 40),
+
+                // Name
+                Text(
+                  'Alex',
+                  style: AppTextStyles.displayHero(color: Colors.white)
+                      .copyWith(fontSize: 48),
+                ),
+                const SizedBox(height: 12),
+
+                // Scheduled text
+                Text(
+                  'Scheduled Daily Practice',
+                  style: AppTextStyles.titleMedium(color: AppColors.primary)
+                      .copyWith(letterSpacing: 0.5),
+                ),
+                const SizedBox(height: 4),
+
+                // Incoming call text
+                Text(
+                  'Incoming AI Call...',
+                  style: AppTextStyles.bodyMedium(
+                    color: Colors.white.withValues(alpha: 0.4),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+            const SizedBox(height: 80),
 
             // Action buttons (Remind Me / Message)
             Padding(
@@ -186,15 +240,13 @@ class IncomingCallScreen extends StatelessWidget {
                     icon: Icons.call,
                     iconRotation: 0,
                     backgroundColor: AppColors.callGreen,
-                    label: 'Accept',
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.activeCall);
-                    },
+                    label: _isStartingSession ? 'Starting...' : 'Accept',
+                    onTap: _isStartingSession ? () {} : _onAcceptCall,
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 64),
+            const SizedBox(height: 16),
 
             // Bottom indicator
             Container(
@@ -206,7 +258,8 @@ class IncomingCallScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-          ],
+            ],
+          ),
         ),
       ),
     );
