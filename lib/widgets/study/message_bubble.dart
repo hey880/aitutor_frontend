@@ -11,6 +11,8 @@ class MessageBubble extends StatelessWidget {
   final int? pronunciationScore;
   final VoidCallback? onPlayAudio;
   final VoidCallback? onPractice;
+  final VoidCallback? onFeedback;
+  final bool showTimestamp;
 
   const MessageBubble({
     super.key,
@@ -21,6 +23,8 @@ class MessageBubble extends StatelessWidget {
     this.pronunciationScore,
     this.onPlayAudio,
     this.onPractice,
+    this.onFeedback,
+    this.showTimestamp = false,
   });
 
   @override
@@ -68,8 +72,8 @@ class MessageBubble extends StatelessWidget {
                     ),
                   ),
 
-                  // Korean translation (AI messages only)
-                  if (!isUser && translatedText != null) ...[
+                  // Korean translation (AI messages only, show only if not empty)
+                  if (!isUser && translatedText != null && translatedText!.isNotEmpty) ...[
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.only(top: 8),
@@ -89,38 +93,70 @@ class MessageBubble extends StatelessWidget {
                     ),
                   ],
 
-                  const SizedBox(height: 8),
-
-                  // Timestamp and score
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        timestamp,
-                        style: AppTextStyles.labelSmall(
-                          color: isUser
-                              ? Colors.white.withValues(alpha: 0.8)
-                              : AppColors.slate400,
-                        ).copyWith(fontSize: 10),
-                      ),
-                      if (isUser && pronunciationScore != null) ...[
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(AppRadius.full),
+                  // Feedback button and score (for user messages)
+                  if (isUser) ...[
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (onFeedback != null)
+                          GestureDetector(
+                            onTap: onFeedback,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(AppRadius.full),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.analytics,
+                                    size: 12,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Feedback',
+                                    style: AppTextStyles.labelSmall(color: Colors.white)
+                                        .copyWith(fontSize: 10),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                          child: Text(
-                            '$pronunciationScore%',
-                            style: AppTextStyles.labelSmall(
-                              color: Colors.white,
-                            ).copyWith(fontSize: 10),
+                        if (onFeedback != null && pronunciationScore != null)
+                          const SizedBox(width: 8),
+                        if (pronunciationScore != null)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(AppRadius.full),
+                            ),
+                            child: Text(
+                              '$pronunciationScore%',
+                              style: AppTextStyles.labelSmall(
+                                color: Colors.white,
+                              ).copyWith(fontSize: 10),
+                            ),
                           ),
-                        ),
                       ],
-                    ],
-                  ),
+                    ),
+                  ] else if (showTimestamp) ...[
+                    // Timestamp for AI messages (only if showTimestamp is true)
+                    const SizedBox(height: 8),
+                    Text(
+                      timestamp,
+                      style: AppTextStyles.labelSmall(
+                        color: AppColors.slate400,
+                      ).copyWith(fontSize: 10),
+                    ),
+                  ],
                 ],
               ),
             ),
